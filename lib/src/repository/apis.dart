@@ -212,6 +212,27 @@ Map<String, dynamic> gamificationDataDemo = {
   ]
 };
 
+Map<String, dynamic> gamificationLoginDataReceive = {
+  "board": [
+    {
+      "type": "normal",
+      "title": "Login Completed",
+      "subtitle": "Awarded 20 gems",
+      "image": "gif1.com",
+    }
+  ]
+};
+Map<String, dynamic> gamificationShareDataReceive = {
+  "board": [
+    {
+      "type": "normal",
+      "title": "App shared",
+      "subtitle": "Awarded 120 gems",
+      "image": "gif1.com",
+    }
+  ]
+};
+
 class GamificationApiProvider {
   final successCode = 200;
 
@@ -222,15 +243,31 @@ class GamificationApiProvider {
   }
 
   Future<GamificationDataMeta> postGameEvent(
-      Map eventData, String baseUrl, {testApi=false}) async {
-    if (testApi) return GamificationDataMeta.fromJson(gamificationDataReceive);
+      Map postData, String baseUrl, {testApi=false}) async {
+    if (testApi) {
+      if (postData['eventType'] == "login"){
+        return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
+      }
+      if (postData['eventType'] == "gameFinish"){
+        return GamificationDataMeta.fromJson(gamificationDataReceive);
+
+      }
+      if (postData['eventType'] == "share"){
+        return GamificationDataMeta.fromJson(gamificationShareDataReceive);
+      }
+      else{
+        return GamificationDataMeta.fromJson(gamificationDataReceive);
+      }
+    }
+
+
 
     final response = await http.post(
       Uri.parse(baseUrl + "/gameData/event"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(eventData),
+      body: jsonEncode(postData),
     );
     return parseResponse(response);
   }

@@ -86,8 +86,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       Emitter<GameState> emit,
       )async{
     final SharedPreferences prefs = await _prefs;
-    var _data = state.copyWith();
-    // var _eventData = _data.gameData!.eventData!.toJson();
+    // var _data = state.copyWith();
+    // var _eventData = _data.gameDa
+    // ta!.eventData!.toJson();
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
     _eventData["firstGame"] = await checkInitialPlay();
