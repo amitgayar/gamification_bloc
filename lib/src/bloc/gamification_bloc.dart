@@ -190,7 +190,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
    playersRankwise(List players, int? points, String? uid){
     var index = 0;
     for (var player in players){
-      if(player.points < points){
+      if(player['points'] < points){
         index = players.indexOf(player);
       }
     }
