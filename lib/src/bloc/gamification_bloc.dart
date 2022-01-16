@@ -71,10 +71,26 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       ShowMessageEvent event,
       Emitter<GameState> emit,
       )async{
+    final SharedPreferences prefs = await _prefs;
+
     var _data = state.copyWith();
+    var _updatedBoard = event.messages;
+    for (var element in event.messages!) {
+          if(element.type == 'leaderBoardUpdate'){
+            var boardIndex = event.messages!.indexOf(element);
+                  var _temp = element.toJson();
+                  _temp['selectedPlayer'] = prefs.getString('uid');
+                  var updatedPlayers = playersRankwise(_temp['player'], _updatedBoard![boardIndex].points, prefs.getString('uid'));
+                  _temp['player'] = updatedPlayers;
+                  _updatedBoard[boardIndex] = Board.fromJson(_temp);
+          }
+    }
+
+
+
     emit(
         GameState.showMessageState(
-        board: event.messages,
+        board: _updatedBoard,
       gameData: _data.gameData,
     ));
   }
@@ -169,6 +185,16 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       logBloc.d('This is not your first game');
       return false;
     }
+  }
+
+   playersRankwise(List players, int? points, String? uid){
+    var index = 0;
+    for (var player in players){
+      if(player.points < points){
+        index = players.indexOf(player);
+      }
+    }
+    return players;
   }
 
 

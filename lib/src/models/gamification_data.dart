@@ -3,12 +3,16 @@ class GamificationDataMeta {
   String? userId;
   EventData? eventData;
   List<Board>? board;
+  int? hint;
+  int? life;
 
   GamificationDataMeta({
     this.eventType,
     this.userId,
     this.eventData,
     this.board,
+    this.hint,
+    this.life
   });
 
   GamificationDataMeta.fromJson(Map<dynamic, dynamic> json) {
@@ -16,6 +20,8 @@ class GamificationDataMeta {
     userId = json['userId'] as String?;
     eventData = (json['eventData'] as Map<String,dynamic>?) != null ? EventData.fromJson(json['eventData'] as Map<String,dynamic>) : null;
     board = (json['board'] as List?)?.map((dynamic e) => Board.fromJson(e as Map<String,dynamic>)).toList();
+    hint = json['hint'] as int?;
+    life = json['life'] as int?;
   }
 
   Map<String, dynamic> toJson() {
@@ -24,6 +30,8 @@ class GamificationDataMeta {
     json['userId'] = userId;
     json['eventData'] = eventData?.toJson();
     json['board'] = board?.map((e) => e.toJson()).toList();
+    json['hint'] = hint;
+    json['life'] = life;
     return json;
   }
 }
@@ -70,6 +78,8 @@ class Board {
   String? image;
   Map? table;
   List<Player>? player;
+  String? selectedPlayer;
+  int? points;
 
   Board({
     this.type,
@@ -78,6 +88,8 @@ class Board {
     this.image,
     this.table,
     this.player,
+    this.selectedPlayer,
+    this.points
   });
 
   Board.fromJson(Map<String, dynamic> json) {
@@ -87,6 +99,8 @@ class Board {
     image = json['image']??'';
     table = json['table'] as Map<String,dynamic>?;
     player = json['player']==null?[]:(json['player'] as List?)?.map((dynamic e) => Player.fromJson(e as Map<String,dynamic>)).toList();
+    selectedPlayer = json['selectedPlayer'] ??'';
+    points = json['points'] as int?;
   }
 
   Map<String, dynamic> toJson() {
@@ -97,6 +111,8 @@ class Board {
     json['image'] = image;
     json['table'] = table;
     json['player'] = player?.map((e) => e.toJson()).toList();
+    json['selectedPlayer'] = selectedPlayer;
+    json['points'] = points;
     return json;
   }
 }

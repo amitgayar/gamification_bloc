@@ -1,3 +1,4 @@
+import 'package:gamification_bloc/gamification_bloc.dart';
 import "package:http/http.dart" as http;
 import "../models/gamification_data.dart";
 import "dart:convert";
@@ -253,9 +254,12 @@ class GamificationApiProvider {
 
       }
       if (postData['eventType'] == "share"){
+        logBloc.d('gameShared event in bloc - gamificationShareDataReceive');
         return GamificationDataMeta.fromJson(gamificationShareDataReceive);
       }
       else{
+        logBloc.d('gameShared event -gamificationDataReceive returned');
+
         return GamificationDataMeta.fromJson(gamificationDataReceive);
       }
     }
