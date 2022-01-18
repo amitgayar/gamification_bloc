@@ -36,11 +36,11 @@ class GameLoginEvent extends GameEvent {
 
 
 class ShowMessageEvent extends GameEvent {
-  const ShowMessageEvent({this.messages});
-  final List<Board>? messages;
+  const ShowMessageEvent({this.index});
+  final int? index;
 
-  // @override
-  // List<Object> get props => [message];
+  @override
+  List<Object> get props => [index!];
 }
 
 class GameSharedEvent extends GameEvent {

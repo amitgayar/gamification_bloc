@@ -41,6 +41,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     logBloc.d('props = $v');
   }
 
+
+
   void _onGameLoad(
       GameLoadedEvent event,
       Emitter<GameState> emit,
@@ -57,41 +59,44 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     }
     // todo: mercy points for game failure
     // todo : first game today
+    var _boards = myGame.board;
+    Board? _processedBoard;
 
+    if(_boards!.isNotEmpty){
+      _processedBoard =  processBoard(_boards[0], prefs) ;
+    }
 
-    logBloc.d("state.props = ${state.props}");
     emit(GameState.gameLoadedState(
       gameData: GamificationDataMeta.fromJson(_gameData),
-        board:myGame.board)
+        boardIndex:0,
+      board: _processedBoard
+    )
     );
-    logBloc.d("state.props after emitting= ${state.props}");
   }
 
   void _showMessageEvent(
       ShowMessageEvent event,
       Emitter<GameState> emit,
       )async{
+
+    logBloc.d('_showMessageEvent');
     final SharedPreferences prefs = await _prefs;
 
     var _data = state.copyWith();
-    var _updatedBoard = event.messages;
-    for (var element in event.messages!) {
-          if(element.type == 'leaderBoardUpdate'){
-            var boardIndex = event.messages!.indexOf(element);
-                  var _temp = element.toJson();
-                  _temp['selectedPlayer'] = prefs.getString('uid');
-                  var updatedPlayers = playersRankwise(_temp['player'], _updatedBoard![boardIndex].points, prefs.getString('uid'));
-                  _temp['player'] = updatedPlayers;
-                  _updatedBoard[boardIndex] = Board.fromJson(_temp);
-          }
+    var _boards = _data.gameData!.board;
+    Board? _processedBoard;
+
+    if(_boards! != [] && event.index! < _boards.length){
+      logBloc.d('processBoard called');
+
+      _processedBoard =  processBoard(_boards[event.index!], prefs);
     }
 
-
-
     emit(
-        GameState.showMessageState(
-        board: _updatedBoard,
-      gameData: _data.gameData,
+        GameState.gameLoadedState(
+        boardIndex: event.index,
+        gameData: _data.gameData,
+          board: _processedBoard
     ));
   }
 
@@ -115,12 +120,12 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     var _newMeta = GamificationDataMeta.fromJson(_new);
 
-    emit(GameState.gameLoadedState(gameData: _newMeta, board: const []));
+    emit(GameState.gameLoadedState(gameData: _newMeta));
     // Todo : loading screen/message
 
     // adding data in event map
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _myGame.board));
+    emit(GameState.gameLoadedState(gameData: _myGame));
   }
 
   void _gameLoginEvent(
@@ -140,7 +145,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
 
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _myGame.board));
+    emit(GameState.gameLoadedState(gameData: _myGame));
   }
 
   void _gameShareEvent(
@@ -156,7 +161,45 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     logBloc.d('Game-shared');
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _myGame.board));
+    emit(GameState.gameLoadedState(gameData: _myGame));
+  }
+
+  Board? processBoard(Board board, SharedPreferences prefs) {
+    logBloc.d('processBoard reached');
+
+    if(board.type == 'leaderBoardUpdate'){
+        logBloc.d('processBoard board.type = leaderBoardUpdate');
+
+        dynamic playerIndex;
+        dynamic playerToEdit;
+        board.player!.asMap().forEach((key, value) {
+          if(
+          value.name == prefs.getString('name')
+          // todo : change me to -- value.userId == prefs.getString('uid')
+          ){
+            logBloc.d('value.name = ${value.name}');
+
+            playerToEdit = value.toJson();
+            playerToEdit["points"] = board.points;
+            playerToEdit = Player.fromJson(playerToEdit);
+            playerIndex = key;
+          }
+        });
+        board.player!.removeAt(playerIndex);
+        board.player!.add(playerToEdit);
+        board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
+        logBloc.d('board = ${board.toJson()}');
+
+        var _newUpdatedBoard = board.toJson();
+        _newUpdatedBoard.addAll({"selectedPlayer": prefs.getString('uid')});
+        board = Board.fromJson(_newUpdatedBoard);
+        logBloc.d('board = ${board.toJson()}');
+
+    }
+    logBloc.d('processBoard end');
+
+    return board;
+
   }
 
   Future<bool> checkInitialAppOpen() async {
@@ -185,16 +228,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       logBloc.d('This is not your first game');
       return false;
     }
-  }
-
-   playersRankwise(List players, int? points, String? uid){
-    var index = 0;
-    for (var player in players){
-      if(player['points'] < points){
-        index = players.indexOf(player);
-      }
-    }
-    return players;
   }
 
 

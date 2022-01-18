@@ -2,47 +2,41 @@ part of 'gamification_bloc.dart';
 
 class GameState extends Equatable {
   const GameState._(
-      {this.gameData, this.board = const <Board>[]});
+      {this.gameData, this.boardIndex = 0, this.board});
 
   const GameState.initial() : this._();
 
   const GameState.loadInProgress() : this._();
 
   const GameState.gameLoadedState(
-      {GamificationDataMeta? gameData, List<Board>? board = const <Board>[]})
-      : this._(gameData: gameData, board: board);
+      {GamificationDataMeta? gameData, int? boardIndex = -1, Board? board})
+      : this._(gameData: gameData, boardIndex: boardIndex, board: board);
 
-  const GameState.showMessageState(
-      {List<Board>? board = const [],
-      GamificationDataMeta? gameData,
-      })
-      : this._(
-            board: board, gameData: gameData);
+  // const GameState.showMessageState(
+  //     {int? boardIndex = 0,
+  //     GamificationDataMeta? gameData,
+  //       Board? board
+  //     })
+  //     : this._(
+  //     boardIndex: boardIndex, gameData: gameData, board: board);
 
-  const GameState.screenSelectState(
-      {
-      List<Board>? board = const [],
-      GamificationDataMeta? gameData})
-      : this._(
-            board: board, gameData: gameData);
-
-  const GameState.showLeaderBoardState() : this._();
 
   GameState copyWith(
       {GamificationDataMeta? gameData,
-      List<Board>? board,
+      int? boardIndex,
       }) {
     return GameState._(
         gameData: gameData ?? this.gameData,
-        board: board ?? this.board,
+      boardIndex: boardIndex ?? this.boardIndex,
     );
   }
 
   final GamificationDataMeta? gameData;
-  final List<Board>? board;
+  final int? boardIndex;
+  final Board? board;
 
   bool get isComplete => ([gameData].isNotEmpty);
 
   @override
-  List get props => [gameData, board];
+  List get props => [gameData, boardIndex, board];
 }

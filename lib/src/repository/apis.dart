@@ -84,7 +84,7 @@ Map<String, dynamic> gamificationDataReceive = {
           "name": "Amit Gayar",
           "points": 743,
           "image": "https://source.unsplash.com/random/200x200?sig=2",
-          "userId": "Amit Gayar"
+          "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
         },
         {
           "name": "KLM",
@@ -111,7 +111,7 @@ Map<String, dynamic> gamificationDataReceive = {
           "userId": "NOP12"
         }
       ],
-      "points": 30 // todo: new points for leaderBoardUpdate animation
+      "points": 1000 // todo: new points for leaderBoardUpdate animation
     }
   ]
 };
