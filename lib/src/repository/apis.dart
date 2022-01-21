@@ -1,4 +1,5 @@
 import 'package:gamification_bloc/gamification_bloc.dart';
+import 'package:gamification_bloc/src/models/campaign_model.dart';
 import 'package:gamification_bloc/src/utils/util_functions.dart';
 import "package:http/http.dart" as http;
 import "../models/gamification_data.dart";
@@ -257,13 +258,68 @@ Map<String, dynamic> gamificationShareDataReceive = {
   ]
 };
 
+Map<String, dynamic> campaignJson = {
+  "campaign" : [
+    {
+      "id": 0,
+      "name": "Daily Challenge",
+      "desc": "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
+      "image": "https://source.unsplash.com/random/200x200?sig=1",
+      "gameMap": {
+        "hint": 4,
+        "life": 4
+      }
+    },
+    {
+      "id": 1,
+      "name": "Practice",
+      "desc": "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
+      "image": "https://source.unsplash.com/random/200x200?sig=2",
+      "gameMap": {
+        "hint": 10000,
+        "life": 10000
+      }
+    },
+    {
+      "id": 2,
+      "name": "Unlimited",
+      "desc": "Unlimited for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=3",
+      "gameMap": {
+        "hint": 14,
+        "life": 14
+      }
+    },
+    {
+      "id": 3,
+      "name": "Weekly Challenge",
+      "desc": "Weekly challenge for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=4",
+      "gameMap": {
+        "hint": 4,
+        "life": 4
+      }
+    },
+    {
+      "id": 4,
+      "name": "Monthly Challenge",
+      "desc": "daily challenge for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=5",
+      "gameMap": {
+        "hint": 4,
+        "life": 4
+      }
+    }
+  ]
+};
+
 class GamificationApiProvider {
   final successCode = 200;
 
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl, {testApi=false}) async {
     if (testApi) return GamificationDataMeta.fromJson(gamificationDataReceive);
     final response = await http.get(Uri.parse(baseUrl + "/gameData/$userId"));
-    return parseResponse(response);
+    return GamificationDataMeta.fromJson(parseResponse(response));
   }
 
   Future<GamificationDataMeta> postGameEvent(
@@ -296,18 +352,28 @@ class GamificationApiProvider {
       },
       body: jsonEncode(postData),
     );
-    return parseResponse(response);
+    return GamificationDataMeta.fromJson(parseResponse(response));
+  }
+
+
+  Future<CampaignListMeta> fetchCampaign(String? userId, String baseUrl, {testApi=false}) async {
+    if (testApi) {
+      return CampaignListMeta.fromJson(campaignJson);
+    }
+    String _url = baseUrl + "gameData/campaign/$userId";
+    final response = await http.get(Uri.parse(_url));
+    return CampaignListMeta.fromJson(parseResponse(response));
   }
 
   // RESPONSE PARSERS
 
-  GamificationDataMeta parseResponse(http.Response response) {
+  Map<String, dynamic> parseResponse(http.Response response) {
     final responseString = jsonDecode(response.body);
-
     if (response.statusCode == successCode) {
-      return GamificationDataMeta.fromJson(responseString);
+      return responseString;
     } else {
-      throw Exception('failed to load game');
+      throw Exception('failed to fetch');
     }
   }
+
 }

@@ -49,3 +49,26 @@ class GameSharedEvent extends GameEvent {
   @override
   List<Object> get props => [name!];
 }
+
+
+class LoadCampaign extends GameEvent{
+  const LoadCampaign(this.campaignId);
+  final int? campaignId;
+  @override
+  List<Object>  get props => [campaignId!];
+}
+
+class SelectCampaign extends GameEvent{
+  const SelectCampaign(this.campaignId);
+  final int campaignId;
+  @override
+  List<Object> get props => [campaignId];
+}
+
+
+class AddUserEvent extends GameEvent {
+  const AddUserEvent({this.userData});
+  final UserData? userData;
+  @override
+  List<Object> get props => [userData!];
+}

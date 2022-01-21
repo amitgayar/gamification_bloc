@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gamification_bloc/src/models/campaign_model.dart';
+import 'package:gamification_bloc/src/models/user.dart';
 import '../repository/gamification_repository.dart';
 import '../models/gamification_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +23,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
   final GameRepository _gameRepository;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final userData = UserData();
 
   void _onEvent(GameEvent event, Emitter<GameState> emit) {
     if (event is GameLoadingEvent) return _onGameLoading(event, emit);
@@ -29,7 +32,26 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if (event is ShowBoardEvent) return _showBoardEvent(event, emit);
     if (event is GameLoginEvent) return _gameLoginEvent(event, emit);
     if (event is GameSharedEvent) return _gameShareEvent(event, emit);
+    if (event is LoadCampaign) return _onCampaignLoad(event, emit);
+
   }
+
+  void _onCampaignLoad(
+      LoadCampaign event,
+      Emitter<GameState> emit,
+      )async{
+    logPrint.d("_onCampaignLoad executed");
+    var _campaignList = await _gameRepository.fetchCampaignData(userData.uid);
+    logPrint.d("_campaignList.isEmpty =  ${_campaignList.campaign!.isEmpty}");
+
+    var _data = state.copyWith();
+
+    emit(GameState.gameLoadedState(campaignList: _campaignList.campaign!, gameData: _data.gameData));
+  }
+
+
+
+
 
   void _onGameLoading(
       GameLoadingEvent event,
@@ -51,6 +73,10 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
     var _firstAccessToday = await checkInitialAppOpen();
     final GamificationDataMeta myGame = await _gameRepository.getGameData(prefs.getString('uid'));
+    var _campaignList = await _gameRepository.fetchCampaignData(prefs.getString('uid'));
+
+    logPrint.d('_campaignList = $_campaignList, myGame = $myGame');
+
     var _gameData = myGame.toJson();
 
     if (_firstAccessToday) {
@@ -67,7 +93,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     emit(GameState.gameLoadedState(
       gameData: GamificationDataMeta.fromJson(_gameData),
         boardIndex:0,
-      board: _processedBoard
+      board: _processedBoard,
+      campaignList: _campaignList.campaign
     )
     );
   }
@@ -93,7 +120,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         GameState.gameLoadedState(
         boardIndex: event.index,
         gameData: _data.gameData,
-          board: _processedBoard
+          board: _processedBoard,
+          campaignList: _data.campaignList
     ));
   }
 
@@ -115,6 +143,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "userId": prefs.getString('uid'),
       "eventData": _eventData,
     };
+    // todo : ghghghghghghg store campaign id to DB HIVE and gameMap
+
     var _newMeta = GamificationDataMeta.fromJson(_new);
 
     emit(GameState.gameLoadedState(gameData: _newMeta));

@@ -58,7 +58,7 @@ class RankingBoardPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: MediaQuery.of(context).size.height*.6,
-                child: RankAnimationWidget(board:board, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex))),
+                child: RankAnimationWidget(board:board, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex, userId: userId,))),
       ],
     );
   }
