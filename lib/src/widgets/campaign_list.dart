@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gamification_bloc/gamification_bloc.dart';
-import '../models/campaign_model.dart';
 import 'package:provider/src/provider.dart';
 import '../bloc/gamification_bloc.dart';
 
