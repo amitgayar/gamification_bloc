@@ -4,13 +4,12 @@ import 'package:equatable/equatable.dart';
 import '../repository/gamification_repository.dart';
 import '../models/gamification_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:logger/logger.dart';
+import '../utils/util_functions.dart';
 
 part 'gamification_event.dart';
 part 'gamification_state.dart';
 
 
-Logger logBloc = Logger();
 
 
 class GamificationBloc extends Bloc<GameEvent, GameState> {
@@ -27,7 +26,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if (event is GameLoadingEvent) return _onGameLoading(event, emit);
     if (event is GameLoadedEvent) return _onGameLoad(event, emit);
     if (event is GameFinishedEvent) return _gameFinishedEvent(event, emit);
-    if (event is ShowMessageEvent) return _showMessageEvent(event, emit);
+    if (event is ShowBoardEvent) return _showBoardEvent(event, emit);
     if (event is GameLoginEvent) return _gameLoginEvent(event, emit);
     if (event is GameSharedEvent) return _gameShareEvent(event, emit);
   }
@@ -38,7 +37,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       ) async {
     emit( const GameState.loadInProgress());
     var v = state;
-    logBloc.d('props = $v');
+    logPrint.d('props = $v');
   }
 
 
@@ -55,10 +54,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     var _gameData = myGame.toJson();
 
     if (_firstAccessToday) {
-      // Todo:  show message locally
+      // todo:  show message locally
+      // todo : first game today
     }
-    // todo: mercy points for game failure
-    // todo : first game today
     var _boards = myGame.board;
     Board? _processedBoard;
 
@@ -74,12 +72,12 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     );
   }
 
-  void _showMessageEvent(
-      ShowMessageEvent event,
+  void _showBoardEvent(
+      ShowBoardEvent event,
       Emitter<GameState> emit,
       )async{
 
-    logBloc.d('_showMessageEvent');
+    logPrint.d('_showMessageEvent');
     final SharedPreferences prefs = await _prefs;
 
     var _data = state.copyWith();
@@ -87,8 +85,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     Board? _processedBoard;
 
     if(_boards! != [] && event.index! < _boards.length){
-      logBloc.d('processBoard called');
-
+      logPrint.d('processBoard called');
       _processedBoard =  processBoard(_boards[event.index!], prefs);
     }
 
@@ -156,28 +153,30 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     Map _eventData = {};
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
-      "eventType": "share",
+      "eventType": event.name,
       "userId": prefs.getString('uid'),
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    logBloc.d('Game-shared');
-    emit(GameState.gameLoadedState(gameData: _myGame));
+    logPrint.d('Game-shared in bloc');
+    emit(GameState.gameLoadedState(gameData: _myGame, boardIndex: 0, board: _myGame.board!=null?_myGame.board![0]:null));
   }
 
   Board? processBoard(Board board, SharedPreferences prefs) {
-    logBloc.d('processBoard reached');
+    logPrint.d('processing Board ');
 
     if(board.type == 'leaderBoardUpdate'){
-        logBloc.d('processBoard board.type = leaderBoardUpdate');
+        logPrint.d('processBoard board.type = leaderBoardUpdate');
 
         dynamic playerIndex;
         dynamic playerToEdit;
+        var oldPlayer = board.player;
         board.player!.asMap().forEach((key, value) {
           if(
-          value.name == prefs.getString('name')
-          // todo : change me to -- value.userId == prefs.getString('uid')
+          value.userId == prefs.getString('uid')
+          // value.name == prefs.getString('name')
+          // todo :  value.userId == prefs.getString('uid')
           ){
-            logBloc.d('value.name = ${value.name}');
+            logPrint.d('value.name = ${value.name}');
 
             playerToEdit = value.toJson();
             playerToEdit["points"] = board.points;
@@ -188,18 +187,21 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         board.player!.removeAt(playerIndex);
         board.player!.add(playerToEdit);
         board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
-        logBloc.d('board = ${board.toJson()}');
+        logPrint.d('board = ${board.toJson()}');
 
         var _newUpdatedBoard = board.toJson();
-        _newUpdatedBoard.addAll({"selectedPlayer": prefs.getString('uid')});
+        // todo : selectedPlayer, oldIndex, newIndex, oldPlayer(keep or delete)
+        _newUpdatedBoard.addAll({
+          "selectedPlayer": prefs.getString('uid'),
+          "oldIndex": playerIndex,
+          "newIndex": board.player!.indexWhere((e) => e.userId == prefs.getString('uid')),
+          "oldPlayer": oldPlayer!.map((e) => e.toJson()).toList(),
+
+        });
         board = Board.fromJson(_newUpdatedBoard);
-        logBloc.d('board = ${board.toJson()}');
-
+        logPrint.d('board = ${board.toJson()}');
     }
-    logBloc.d('processBoard end');
-
     return board;
-
   }
 
   Future<bool> checkInitialAppOpen() async {
@@ -207,11 +209,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     final int initialDayOpen = (prefs.getInt('initialDayOpen') ?? DateTime.now().day-1) ;
     if(initialDayOpen - DateTime.now().day != 0){
       await prefs.setInt('initialDayOpen', DateTime.now().day).then((bool success) => true);
-      logBloc.d('First visit of the Day - sharedPref[initialDayOpen] = $initialDayOpen');
+      logPrint.d('First visit of the Day - sharedPref[initialDayOpen] = $initialDayOpen');
       return true;
     }
     else {
-      logBloc.d('You have opened the App earlier today - sharedPref[initialDayOpen] = $initialDayOpen');
+      logPrint.d('You have opened the App earlier today - sharedPref[initialDayOpen] = $initialDayOpen');
       return false;
     }
   }
@@ -221,11 +223,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     final int initialPlay = (prefs.getInt('initialPlay') ?? DateTime.now().day-1) ;
     if(initialPlay - DateTime.now().day != 0){
       await prefs.setInt('initialPlay', DateTime.now().day).then((bool success) => true);
-      logBloc.d('Initial game of the day');
+      logPrint.d('Initial game of the day');
       return true;
     }
     else {
-      logBloc.d('This is not your first game');
+      logPrint.d('This is not your first game');
       return false;
     }
   }

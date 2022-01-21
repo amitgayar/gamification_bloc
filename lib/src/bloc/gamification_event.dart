@@ -35,8 +35,8 @@ class GameLoginEvent extends GameEvent {
 }
 
 
-class ShowMessageEvent extends GameEvent {
-  const ShowMessageEvent({this.index});
+class ShowBoardEvent extends GameEvent {
+  const ShowBoardEvent({this.index});
   final int? index;
 
   @override
@@ -44,5 +44,8 @@ class ShowMessageEvent extends GameEvent {
 }
 
 class GameSharedEvent extends GameEvent {
-  const GameSharedEvent();
+  const GameSharedEvent({this.name});
+  final String? name;
+  @override
+  List<Object> get props => [name!];
 }

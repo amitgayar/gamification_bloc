@@ -1,4 +1,5 @@
 import 'package:gamification_bloc/gamification_bloc.dart';
+import 'package:gamification_bloc/src/utils/util_functions.dart';
 import "package:http/http.dart" as http;
 import "../models/gamification_data.dart";
 import "dart:convert";
@@ -6,8 +7,10 @@ import "dart:convert";
 // const String baseUrl = 'http://sudoku.playappster.com/';
 
 Map<String, dynamic> gamificationDataInit = {
-  "hint": 3,
-  "life": 3
+ "gameMap" : {
+   "hint": 3,
+   "life": 3
+ }
 };
 
 Map<String, dynamic> gamificationDataSend = {
@@ -81,12 +84,6 @@ Map<String, dynamic> gamificationDataReceive = {
           "userId": "Manav Garg"
         },
         {
-          "name": "Amit Gayar",
-          "points": 743,
-          "image": "https://source.unsplash.com/random/200x200?sig=2",
-          "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
-        },
-        {
           "name": "KLM",
           "points": 741,
           "image": "image.com",
@@ -109,6 +106,30 @@ Map<String, dynamic> gamificationDataReceive = {
           "points": 715,
           "image": "image.com",
           "userId": "NOP12"
+        },
+        {
+          "name": "OPQ",
+          "points": 615,
+          "image": "image.com",
+          "userId": "OPQ12"
+        },
+        {
+          "name": "PQR",
+          "points": 605,
+          "image": "image.com",
+          "userId": "PQR12"
+        },
+        {
+          "name": "QRS",
+          "points": 515,
+          "image": "image.com",
+          "userId": "QRS12"
+        },
+        {
+          "name": "Amit Gayar",
+          "points": 443,
+          "image": "https://source.unsplash.com/random/200x200?sig=2",
+          "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
         }
       ],
       "points": 1000 // todo: new points for leaderBoardUpdate animation
@@ -116,8 +137,10 @@ Map<String, dynamic> gamificationDataReceive = {
   ]
 };
 Map<String, dynamic> gamificationDataDemo = {
-  "hint": 3,
-  "life": 3,
+  "gameMap" : {
+    "hint": 3,
+    "life": 3
+  },
   "eventType": "login",
   "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2",
   "eventData": {
@@ -254,11 +277,11 @@ class GamificationApiProvider {
 
       }
       if (postData['eventType'] == "share"){
-        logBloc.d('gameShared event in bloc - gamificationShareDataReceive');
+        logPrint.d('gameShared event in bloc - gamificationShareDataReceive');
         return GamificationDataMeta.fromJson(gamificationShareDataReceive);
       }
       else{
-        logBloc.d('gameShared event -gamificationDataReceive returned');
+        logPrint.d('gameShared event -gamificationDataReceive returned');
 
         return GamificationDataMeta.fromJson(gamificationDataReceive);
       }
