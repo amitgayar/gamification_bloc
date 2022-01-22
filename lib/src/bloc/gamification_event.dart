@@ -4,7 +4,7 @@ abstract class GameEvent extends Equatable {
   const GameEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class GameLoadingEvent extends GameEvent {
@@ -51,24 +51,11 @@ class GameSharedEvent extends GameEvent {
 }
 
 
-class LoadCampaign extends GameEvent{
-  const LoadCampaign(this.campaignId);
-  final int? campaignId;
-  @override
-  List<Object>  get props => [campaignId!];
-}
 
 class SelectCampaign extends GameEvent{
   const SelectCampaign(this.campaignId);
-  final int campaignId;
+  final int? campaignId;
   @override
-  List<Object> get props => [campaignId];
+  List<Object?> get props => [campaignId];
 }
 
-
-class AddUserEvent extends GameEvent {
-  const AddUserEvent({this.userData});
-  final UserData? userData;
-  @override
-  List<Object> get props => [userData!];
-}

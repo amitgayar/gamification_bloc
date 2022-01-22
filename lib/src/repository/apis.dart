@@ -317,7 +317,7 @@ class GamificationApiProvider {
   final successCode = 200;
 
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl, {testApi=false}) async {
-    if (testApi) return GamificationDataMeta.fromJson(gamificationDataReceive);
+    if (testApi) return GamificationDataMeta.fromJson(gamificationDataInit);
     final response = await http.get(Uri.parse(baseUrl + "/gameData/$userId"));
     return GamificationDataMeta.fromJson(parseResponse(response));
   }

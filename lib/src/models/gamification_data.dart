@@ -3,16 +3,14 @@ class GamificationDataMeta {
   String? userId;
   EventData? eventData;
   List<Board>? board;
-  int? hint;
-  int? life;
+  Map<String,dynamic>? gameMap;
 
   GamificationDataMeta({
     this.eventType,
     this.userId,
     this.eventData,
     this.board,
-    this.hint,
-    this.life
+    this.gameMap,
   });
 
   GamificationDataMeta.fromJson(Map<dynamic, dynamic> json) {
@@ -20,8 +18,7 @@ class GamificationDataMeta {
     userId = json['userId'] as String?;
     eventData = (json['eventData'] as Map<String,dynamic>?) != null ? EventData.fromJson(json['eventData'] as Map<String,dynamic>) : null;
     board = (json['board'] as List?)?.map((dynamic e) => Board.fromJson(e as Map<String,dynamic>)).toList();
-    hint = json['hint'] as int?;
-    life = json['life'] as int?;
+    gameMap = json['gameMap'] as Map<String,dynamic>?;
   }
 
   Map<String, dynamic> toJson() {
@@ -30,8 +27,7 @@ class GamificationDataMeta {
     json['userId'] = userId;
     json['eventData'] = eventData?.toJson();
     json['board'] = board?.map((e) => e.toJson()).toList();
-    json['hint'] = hint;
-    json['life'] = life;
+    json['gameMap'] = gameMap;
     return json;
   }
 }
@@ -41,7 +37,7 @@ class EventData {
   String? name;
   String? image;
   bool? firstGame;
-  Map? gameMap;
+  Map<String, dynamic>? gameMap;
 
   EventData({
     this.email,

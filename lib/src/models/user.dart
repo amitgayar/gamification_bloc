@@ -1,4 +1,4 @@
-class UserData {
+class GameUserData {
   String? name;
   String? email;
   String? image;
@@ -8,24 +8,24 @@ class UserData {
   String? uid;
   bool? isLoggedIn;
 
-  UserData({name = '', email = '', image = '', phoneNumber = '', isPremium = false, roomCode = '', uid = '', isLoggedIn = false});
+  GameUserData({this.name = '', this.email = '', this.image = '', this.phoneNumber = '', this.isPremium = false, this.roomCode = '', this.uid = '', this.isLoggedIn = false});
 
-  UserData.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-    image = json['photoURL'];
-    phoneNumber = json['phoneNumber'];
-    isPremium = json['isPremium'];
-    roomCode = json['roomCode'];
-    uid = json['uid'];
-    isLoggedIn = json['isLoggedIn'];
+  GameUserData.fromJson(Map<dynamic, dynamic> json) {
+    name = json['name']??'';
+    email = json['email']??'';
+    image = json['image']??'';
+    phoneNumber = json['phoneNumber']??'';
+    isPremium = json['isPremium']??false;
+    roomCode = json['roomCode']??'';
+    uid = json['uid']??'';
+    isLoggedIn = json['isLoggedIn']??false;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
     data['email'] = email;
-    data['photoURL'] = image;
+    data['image'] = image;
     data['phoneNumber'] = phoneNumber;
     data['isPremium'] = isPremium;
     data['roomCode'] = roomCode;

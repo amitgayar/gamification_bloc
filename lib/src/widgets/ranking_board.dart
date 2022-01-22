@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:gamification_bloc/gamification_bloc.dart';
+import '../../gamification_bloc.dart';
+import '../models/user.dart';
+import '../models/gamification_data.dart';
+import '../widgets/player_row_widget.dart';
+import 'package:provider/src/provider.dart';
 
 
 
 class RankingBoardPage extends StatelessWidget {
-   const RankingBoardPage({Key? key, required this.board, required this.userId}) : super(key: key);
+   const RankingBoardPage({Key? key, required this.board}) : super(key: key);
   final Board board;
-  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -58,21 +61,21 @@ class RankingBoardPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: MediaQuery.of(context).size.height*.6,
-                child: RankAnimationWidget(board:board, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex, userId: userId,))),
+                child: RankAnimationWidget(board:board, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex,))),
       ],
     );
   }
 }
 
-
 class RankAnimationWidget extends StatelessWidget {
-  RankAnimationWidget({Key? key,this.board, this.players, this.oldIndex, this.newIndex, this.userId}) : super(key: key);
+  RankAnimationWidget({Key? key,this.board, this.players, this.oldIndex, this.newIndex}) : super(key: key);
 
   final dynamic players;
   final dynamic oldIndex;
   final dynamic newIndex;
   final dynamic board;
-  final dynamic userId;
+  dynamic _userId;
+
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final scrollController = ScrollController();
 
@@ -121,13 +124,16 @@ class RankAnimationWidget extends StatelessWidget {
           // todo : change
           adjustList(context);
         },
-        child: PlayerRowWidget(player: item, index: index, userId: userId,),
+        child: PlayerRowWidget(player: item, index: index, userId: _userId,),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // todo :  get userId
+    _userId = context.select((GamificationBloc bloc) => bloc.state.userData!.uid);
+    // _userId = GameUserData().uid;
     return AnimatedList(
       shrinkWrap: true,
       controller: scrollController,

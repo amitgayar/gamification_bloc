@@ -43,6 +43,7 @@ class NormalBoardContent extends StatelessWidget {
               );
             },
           ),
+          board.table != null?
           Column(
               children: board.table!.entries.map((entry) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 48),
@@ -68,7 +69,8 @@ class NormalBoardContent extends StatelessWidget {
                 ),
               )).toList()
 
-          ),
+          ):
+          Container(),
         ],
       ),
     );
