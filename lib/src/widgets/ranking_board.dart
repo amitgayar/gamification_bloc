@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../../gamification_bloc.dart';
-import '../models/user.dart';
 import '../models/gamification_data.dart';
 import '../widgets/player_row_widget.dart';
 import 'package:provider/src/provider.dart';

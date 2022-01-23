@@ -22,11 +22,16 @@ class CampaignListWidget extends StatelessWidget {
     return SizedBox(
       height: 100,
       child:  Container(
-        decoration: const BoxDecoration(
-            border: Border.symmetric(horizontal: BorderSide(color: Colors.grey, width: 1)),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            stops: const [0.1, 0.5, 0.7, 0.9],
+            colors: [Colors.blueGrey[100]!, Colors.blueGrey[300]!, Colors.blueGrey[100]!, Colors.blueGrey[300]!]
+        )
         ),
         child: ListView(
-          itemExtent: 180,
+          itemExtent: 220,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             children: [
@@ -37,33 +42,37 @@ class CampaignListWidget extends StatelessWidget {
                   child: InkWell(
                     onTap: () => onSelection(campaign),
                     child: Card(
-                      child:  Column(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: ClipOval(
-                              child: Image.network(
-                                campaign.image!,
-                                width: 100.0,
-                                errorBuilder:  (context, error, stackTrace) {
-                                  return const Icon(CupertinoIcons.square_stack_3d_down_right);
-                                },
+                      shadowColor: Colors.blueGrey ,
+                      child:  Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: ClipOval(
+                                child: Image.network(
+                                  campaign.image!,
+                                  width: 100.0,
+                                  errorBuilder:  (context, error, stackTrace) {
+                                    return const Icon(CupertinoIcons.square_stack_3d_down_right);
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(campaign.name!.toString().toCapitalized(),
-                              style: Theme.of(context).textTheme.headline6,
+                            Expanded(
+                              flex: 1,
+                              child: Text(campaign.name!.toString().toCapitalized(),
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(campaign.desc!.toString().toCapitalized(),
-                              style: Theme.of(context).textTheme.caption,
+                            Expanded(
+                              flex: 1,
+                              child: Text(campaign.desc!.toString().toCapitalized(),
+                                style: Theme.of(context).textTheme.caption,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

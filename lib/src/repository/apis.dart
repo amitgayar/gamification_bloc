@@ -267,7 +267,10 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
         "hint": 4,
-        "life": 4
+        "life": 4,
+        "level": 0
+        // "level": 0,1,2,3  (int value [0,1,2,3])
+
       }
     },
     {
@@ -277,7 +280,8 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=2",
       "gameMap": {
         "hint": 10000,
-        "life": 10000
+        "life": 10000,
+        "level": 0
       }
     },
     {
@@ -287,7 +291,8 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=3",
       "gameMap": {
         "hint": 14,
-        "life": 14
+        "life": 14,
+        "level": 2
       }
     },
     {
@@ -297,7 +302,8 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=4",
       "gameMap": {
         "hint": 4,
-        "life": 4
+        "life": 4,
+        "level": 3
       }
     },
     {
@@ -307,7 +313,9 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=5",
       "gameMap": {
         "hint": 4,
-        "life": 4
+        "life": 4,
+        "level": 1
+
       }
     }
   ]
