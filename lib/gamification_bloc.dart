@@ -9,3 +9,4 @@ export './src/widgets/campaign_list.dart';
 export './src/widgets/normal_board.dart';
 export './src/widgets/ranking_board.dart';
 export './src/models/campaign_model.dart';
+export './src/models/data_const_http.dart';

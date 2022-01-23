@@ -177,7 +177,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       )async{
     var _data = state.copyWith();
     Map _eventData = {};
-    _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
       "eventType": event.name,
       "userId": _data.userData!.uid,

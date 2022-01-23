@@ -1,4 +1,5 @@
 import 'package:gamification_bloc/src/models/campaign_model.dart';
+import 'package:gamification_bloc/src/models/data_const_http.dart';
 
 import '../models/gamification_data.dart';
 import '../repository/apis.dart';
@@ -17,11 +18,3 @@ class GameRepository {
   Future<CampaignListMeta> fetchCampaignData (String? userId) => _gameApiProvider.fetchCampaign(userId,dataConst.baseUrl, testApi: dataConst.testApi);
 }
 
-
-class DataConst{
-  DataConst({
-    required this.baseUrl, this.testApi = false
-});
-  final String baseUrl;
-  final bool testApi;
-}

@@ -5,8 +5,6 @@ import "package:http/http.dart" as http;
 import "../models/gamification_data.dart";
 import "dart:convert";
 
-// const String baseUrl = 'http://sudoku.playappster.com/';
-
 Map<String, dynamic> gamificationDataInit = {
  "gameMap" : {
    "hint": 3,
@@ -334,24 +332,22 @@ class GamificationApiProvider {
       Map postData, String baseUrl, {testApi=false}) async {
     if (testApi) {
       if (postData['eventType'] == "login"){
+        logPrint.d('testApi : login event  - $gamificationLoginDataReceive');
         return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
       }
       if (postData['eventType'] == "gameFinish"){
+        logPrint.d('testApi : gameFinish event  - $gamificationDataReceive');
         return GamificationDataMeta.fromJson(gamificationDataReceive);
-
       }
       if (postData['eventType'] == "share"){
-        logPrint.d('gameShared event in bloc - gamificationShareDataReceive');
+        logPrint.d('testApi : gameShared event  - $gamificationShareDataReceive');
         return GamificationDataMeta.fromJson(gamificationShareDataReceive);
       }
       else{
-        logPrint.d('gameShared event -gamificationDataReceive returned');
-
-        return GamificationDataMeta.fromJson(gamificationDataReceive);
+        logPrint.d('testApi : unknown? event -gamificationDataReceive returned');
+        return GamificationDataMeta.fromJson({});
       }
     }
-
-
 
     final response = await http.post(
       Uri.parse(baseUrl + "/gameData/event"),
@@ -380,7 +376,7 @@ class GamificationApiProvider {
     if (response.statusCode == successCode) {
       return responseString;
     } else {
-      throw Exception('failed to fetch');
+      throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');
     }
   }
 
