@@ -110,8 +110,12 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       )async{
 
     var _data = state.copyWith();
+    var _userJson = _data.userData!.toJson();
+    _userJson.addAll({'uid':event.userId});
+    var _user = GameUserData.fromJson(_userJson);
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
+    _eventData["campaignId"] = _data.campaignId;
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
       "eventType": "gameFinish",
@@ -122,17 +126,16 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     // Todo : loading screen
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-    var _boards = _myGame.board;
+    var _boards = _myGame.board??[];
     Board? _processedBoard;
 
-    if(_boards!.isNotEmpty){
-      _processedBoard =  processBoard(_boards[0], _data.userData!.uid) ;
+    if(_boards.isNotEmpty){
+      _processedBoard =  processBoard(_boards[0], event.userId) ;
     }
 
     emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
-        campaignList: _campaignList.campaign, userData: _data.userData));
+        campaignList: _campaignList.campaign, userData: _user));
     // Todo : pop loading screen
-
   }
 
   void _gameLoginEvent(
@@ -168,7 +171,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
    /// fetch campaigns
     var _campaignList = await _gameRepository.fetchCampaignData(_data.userData!.uid);
 
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _myGame!.board!=null?_myGame.board![0]:null,
+    emit(GameState.gameLoadedState(gameData: _myGame, board: (_myGame!.board!.isEmpty || _myGame.board == null)?null:_myGame.board![0],
         campaignList: _campaignList.campaign, userData: _user));
   }
 
@@ -184,8 +187,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "eventData" : _eventData
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    logPrint.d('Game-shared in bloc');
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _myGame.board!=null?_myGame.board![0]:null,
+    logPrint.d('Game-shared in bloc ${_myGame.board}');
+    emit(GameState.gameLoadedState(gameData: _myGame, board: (_myGame.board!.isEmpty || _myGame.board == null)?null:_myGame.board![0],
                              campaignList: _data.campaignList, campaignId: _data.campaignId, userData: _data.userData
     ));
   }
@@ -197,18 +200,17 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
   /// utility functions :
   Board? processBoard(Board? board, String? uid) {
-    logPrint.d('processing Board ');
+    logPrint.d('processing Board with uid : $uid');
 
     if(board!.type == 'leaderBoardUpdate'){
         logPrint.d('processBoard board.type = leaderBoardUpdate');
 
-        dynamic playerIndex;
-        dynamic playerToEdit;
+        dynamic playerIndex = -1;
+        dynamic playerToEdit = {};
         var oldPlayer = board.player;
         board.player!.asMap().forEach((key, value) {
           if(
-          // value.userId == uid
-          value.name == 'Amit Gayar'
+          value.userId == uid
           // todo :  value.userId == prefs.getString('uid')
           ){
             playerToEdit = value.toJson();
@@ -217,8 +219,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
             playerIndex = key;
           }
         });
-        board.player!.removeAt(playerIndex);
-        board.player!.add(playerToEdit);
+        if(playerIndex != -1){
+          board.player!.removeAt(playerIndex);
+          board.player!.add(playerToEdit);
+        }
+
         board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
         logPrint.d('board = ${board.toJson()}');
 

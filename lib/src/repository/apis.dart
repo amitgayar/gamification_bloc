@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:gamification_bloc/gamification_bloc.dart';
 import 'package:gamification_bloc/src/models/campaign_model.dart';
 import 'package:gamification_bloc/src/utils/util_functions.dart';
@@ -133,6 +135,15 @@ Map<String, dynamic> gamificationDataReceive = {
       ],
       "points": 1000 // todo: new points for leaderBoardUpdate animation
     }
+  ]
+};
+Map<String, dynamic> gamificationDataJsonDummy = {
+  "board": [
+    {
+      "type": "normal",
+      "title": "Error!!",
+      "image": "gif1.com",
+    },
   ]
 };
 Map<String, dynamic> gamificationDataDemo = {
@@ -318,6 +329,68 @@ Map<String, dynamic> campaignJson = {
     }
   ]
 };
+Map<String, dynamic> campaignJsonDummy = {
+  "campaign" : [
+    {
+      "id": 0,
+      "name": "Daily Challenge",
+      "desc": "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
+      "image": "https://source.unsplash.com/random/200x200?sig=1",
+      "gameMap": {
+        "hint": 4,
+        "life": 4,
+        "level": 0
+        // "level": 0,1,2,3  (int value [0,1,2,3])
+
+      }
+    },
+    {
+      "id": 1,
+      "name": "Practice",
+      "desc": "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
+      "image": "https://source.unsplash.com/random/200x200?sig=2",
+      "gameMap": {
+        "hint": 10000,
+        "life": 10000,
+        "level": 0
+      }
+    },
+    {
+      "id": 2,
+      "name": "Unlimited",
+      "desc": "Unlimited for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=3",
+      "gameMap": {
+        "hint": 14,
+        "life": 14,
+        "level": 2
+      }
+    },
+    {
+      "id": 3,
+      "name": "Weekly Challenge",
+      "desc": "Weekly challenge for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=4",
+      "gameMap": {
+        "hint": 4,
+        "life": 4,
+        "level": 3
+      }
+    },
+    {
+      "id": 4,
+      "name": "Monthly Challenge",
+      "desc": "daily challenge for progressing",
+      "image": "https://source.unsplash.com/random/200x200?sig=5",
+      "gameMap": {
+        "hint": 4,
+        "life": 4,
+        "level": 1
+
+      }
+    }
+  ]
+};
 
 class GamificationApiProvider {
   final successCode = 200;
@@ -327,7 +400,18 @@ class GamificationApiProvider {
     var _url = baseUrl + "/gameData/$userId";
     logPrint.d("fetching GameData from URL- $_url");
     final response = await http.get(Uri.parse(_url));
-    return GamificationDataMeta.fromJson(parseResponse(response));
+    http.Response _response;
+    try {
+      _response = await http.get(Uri.parse(_url))
+          .timeout(const Duration(seconds: 6));
+      return GamificationDataMeta.fromJson(parseResponse(_response));
+    } on TimeoutException catch (e) {
+      logPrint.w('Timeout in fetching GameData : $e');
+      return GamificationDataMeta.fromJson(gamificationDataDemo);
+    } on Error catch (e) {
+      logPrint.w('Error in fetching GameData: $e');
+      return GamificationDataMeta.fromJson(gamificationDataDemo);
+    }
   }
 
   Future<GamificationDataMeta> postGameEvent(
@@ -350,10 +434,13 @@ class GamificationApiProvider {
         return GamificationDataMeta.fromJson({});
       }
     }
-    logPrint.d("posting event with data- $postData");
+
+    dynamic _url = baseUrl + "/gameData/event?type=" + postData["eventType"];
+
+    logPrint.d("posting event with data- $postData and url : $_url");
 
     final response = await http.post(
-      Uri.parse(baseUrl + "/gameData/event"),
+      Uri.parse(_url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -370,8 +457,18 @@ class GamificationApiProvider {
     String _url = baseUrl + "/gameData/campaign/$userId";
     logPrint.d("fetching campaign from URL- $_url");
 
-    final response = await http.get(Uri.parse(_url));
-    return CampaignListMeta.fromJson(parseResponse(response));
+    http.Response _response;
+    try {
+      _response = await http.get(Uri.parse(_url))
+          .timeout(const Duration(seconds: 6));
+      return CampaignListMeta.fromJson(parseResponse(_response));
+    } on TimeoutException catch (e) {
+      logPrint.w('Timeout in fetching campaign : $e');
+      return CampaignListMeta.fromJson(campaignJsonDummy);
+    } on Error catch (e) {
+      logPrint.w('Error in fetching campaign: $e');
+      return CampaignListMeta.fromJson(campaignJsonDummy);
+    }
   }
 
   // RESPONSE PARSERS
@@ -379,7 +476,7 @@ class GamificationApiProvider {
   Map<String, dynamic> parseResponse(http.Response response) {
     final responseString = jsonDecode(response.body);
     if (response.statusCode == successCode) {
-
+      logPrint.d('responseString from gameData API : $responseString');
       return responseString;
     } else {
       throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');
