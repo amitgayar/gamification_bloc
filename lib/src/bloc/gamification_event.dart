@@ -11,18 +11,19 @@ class GameLoadingEvent extends GameEvent {
   const GameLoadingEvent();
 }
 class GameLoadedEvent extends GameEvent {
-  const GameLoadedEvent({this.userId = ""});
+  const GameLoadedEvent({required this.userId});
   final String userId;
   @override
   List<Object> get props => [];
 }
 
 class GameFinishedEvent extends GameEvent {
-  const GameFinishedEvent({this.gameMap = const {}});
+  const GameFinishedEvent({this.gameMap = const {}, required this.userId});
   final Map<String, dynamic> gameMap;
+  final String userId;
 
   @override
-  List<Object> get props => [gameMap];
+  List<Object> get props => [gameMap, userId];
 }
 
 
@@ -39,15 +40,18 @@ class ShowBoardEvent extends GameEvent {
   const ShowBoardEvent({this.index});
   final int? index;
 
+
   @override
   List<Object> get props => [index!];
 }
 
 class GameSharedEvent extends GameEvent {
-  const GameSharedEvent({this.name});
+  const GameSharedEvent({required this.name, required this.userId});
   final String? name;
+  final String userId;
+
   @override
-  List<Object> get props => [name!];
+  List<Object> get props => [name!, userId];
 }
 
 

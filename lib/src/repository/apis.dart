@@ -324,7 +324,9 @@ class GamificationApiProvider {
 
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl, {testApi=false}) async {
     if (testApi) return GamificationDataMeta.fromJson(gamificationDataInit);
-    final response = await http.get(Uri.parse(baseUrl + "/gameData/$userId"));
+    var _url = baseUrl + "/gameData/$userId";
+    logPrint.d("fetching GameData from URL- $_url");
+    final response = await http.get(Uri.parse(_url));
     return GamificationDataMeta.fromJson(parseResponse(response));
   }
 
@@ -348,6 +350,7 @@ class GamificationApiProvider {
         return GamificationDataMeta.fromJson({});
       }
     }
+    logPrint.d("posting event with data- $postData");
 
     final response = await http.post(
       Uri.parse(baseUrl + "/gameData/event"),
@@ -364,7 +367,9 @@ class GamificationApiProvider {
     if (testApi) {
       return CampaignListMeta.fromJson(campaignJson);
     }
-    String _url = baseUrl + "gameData/campaign/$userId";
+    String _url = baseUrl + "/gameData/campaign/$userId";
+    logPrint.d("fetching campaign from URL- $_url");
+
     final response = await http.get(Uri.parse(_url));
     return CampaignListMeta.fromJson(parseResponse(response));
   }
@@ -374,6 +379,7 @@ class GamificationApiProvider {
   Map<String, dynamic> parseResponse(http.Response response) {
     final responseString = jsonDecode(response.body);
     if (response.statusCode == successCode) {
+
       return responseString;
     } else {
       throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');

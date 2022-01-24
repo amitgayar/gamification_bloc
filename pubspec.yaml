@@ -1,7 +1,7 @@
 name: gamification_bloc
 description: A BLoC implementation to gamify various base games.
 version: 0.0.1
-homepage:
+
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

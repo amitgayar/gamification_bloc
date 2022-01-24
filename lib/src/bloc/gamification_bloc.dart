@@ -63,8 +63,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       GameLoadedEvent event,
       Emitter<GameState> emit,
       ) async {
-    final GamificationDataMeta myGame = await _gameRepository.getGameData('');
-    var _campaignList = await _gameRepository.fetchCampaignData('');
+
+    final GamificationDataMeta myGame = await _gameRepository.getGameData(event.userId);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
     var _gameData = myGame.toJson();
     emit(GameState.gameLoadedState(
@@ -114,13 +115,13 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
       "eventType": "gameFinish",
-      "userId": _data.userData!.uid,
+      "userId": event.userId,
       "eventData": _eventData,
     };
     // todo : store campaign id to DB HIVE and gameMap
     // Todo : loading screen
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    var _campaignList = await _gameRepository.fetchCampaignData(_data.userData!.uid);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
     var _boards = _myGame.board;
     Board? _processedBoard;
 
@@ -179,7 +180,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     Map _eventData = {};
     Map _new = {
       "eventType": event.name,
-      "userId": _data.userData!.uid,
+      "userId": event.userId,
       "eventData" : _eventData
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
