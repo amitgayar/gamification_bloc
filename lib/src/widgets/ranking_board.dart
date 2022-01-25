@@ -80,32 +80,39 @@ class RankAnimationWidget extends StatelessWidget {
 
 
   adjustList(context) async{
-    var oldIndex = 2;
-    var newIndex = 10;
+    // var oldIndex = 2;
+    // var newIndex = 1;
     var totalItems = players.length;
-    final scrollHeight = context.findAncestorRenderObjectOfType<RenderSliver>()!.constraints.viewportMainAxisExtent;
-    var _removedItem = players[oldIndex];
+    // final scrollHeight = context.findAncestorRenderObjectOfType<RenderSliver>()!.constraints.viewportMainAxisExtent;
+    final scrollHeight = totalItems*90;
+    var _removedItem = board.selectedPlayerData;
+    logPrint.d("adjustList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${board.selectedPlayerData.toJson()}");
 
-    await Future.delayed(const Duration(seconds: 1));
-    await scrollController.animateTo(scrollHeight*oldIndex/totalItems, duration: const Duration(milliseconds: 1000), curve: Curves.easeOutExpo);
 
-    first() async{
+
+    // await Future.delayed(const Duration(seconds: 1));
+    await scrollController.animateTo(scrollHeight*(oldIndex-1)/totalItems, duration: const Duration(milliseconds: 1), curve: Curves.linear);
+
+    _removeAnimation() async{
       listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
-      await Future.delayed(const Duration(milliseconds: 400));
+      // await Future.delayed(const Duration(milliseconds: 400));
     }
 
-    second() async{
+    _insertAnimation() async{
       players.insert(newIndex, _removedItem);
       listKey.currentState!.insertItem(newIndex, duration: const Duration(milliseconds: 4000));
     }
 
-    third() async{
-      scrollController.animateTo(scrollHeight*newIndex/totalItems, duration: const Duration(milliseconds: 4000), curve: Curves.easeOutExpo);
+    _scrollAnimation() async{
+      scrollController.animateTo(scrollHeight*(newIndex-1)/totalItems, duration: const Duration(milliseconds: 4000), curve: Curves.easeInOutExpo);
       await Future.delayed(const Duration(seconds: 1));
     }
-    first();
-    second();
-    third();
+    if(_removedItem.name == '' || _removedItem.name == null){
+      // _removeAnimation();
+      _insertAnimation();
+      _scrollAnimation();
+    }
+
     // await Future.wait([first(), second(), third()]).then((value) {
     //   log.d('future wait OK OK');
     // });
@@ -130,6 +137,7 @@ class RankAnimationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => adjustList(context));
     // todo :  get userId
     _userId = context.select((GamificationBloc bloc) => bloc.state.userData!.uid);
     // _userId = GameUserData().uid;

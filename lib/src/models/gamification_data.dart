@@ -79,6 +79,7 @@ class Board {
   int? oldIndex;
   int? newIndex;
   List<Player>? oldPlayer;
+  Player? selectedPlayerData;
 
 
 
@@ -93,7 +94,8 @@ class Board {
     this.points,
     this.oldIndex,
     this.newIndex,
-    this.oldPlayer
+    this.oldPlayer,
+    this.selectedPlayerData
 
 
   });
@@ -106,6 +108,7 @@ class Board {
     table = json['table'] as Map<String,dynamic>?;
     player = json['player']==null?[]:(json['player'] as List?)?.map((dynamic e) => Player.fromJson(e as Map<String,dynamic>)).toList();
     selectedPlayer = json['selectedPlayer'] ??'';
+    selectedPlayerData = Player.fromJson((json['selectedPlayerData']?? <String,dynamic>{}));
     points = json['points'] as int?;
     oldIndex = json['oldIndex'] as int?;
     newIndex = json['newIndex'] as int?;
@@ -121,6 +124,7 @@ class Board {
     json['table'] = table;
     json['player'] = player?.map((e) => e.toJson()).toList();
     json['selectedPlayer'] = selectedPlayer;
+    json['selectedPlayerData'] = selectedPlayerData;
     json['points'] = points;
     json['oldIndex'] = oldIndex;
     json['newIndex'] = newIndex;

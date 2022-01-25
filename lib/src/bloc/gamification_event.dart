@@ -18,7 +18,7 @@ class GameLoadedEvent extends GameEvent {
 }
 
 class GameFinishedEvent extends GameEvent {
-  const GameFinishedEvent({this.gameMap = const {}, required this.userId});
+  const GameFinishedEvent({required this.gameMap, required this.userId});
   final Map<String, dynamic> gameMap;
   final String userId;
 

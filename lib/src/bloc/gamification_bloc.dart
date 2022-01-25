@@ -206,8 +206,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         logPrint.d('processBoard board.type = leaderBoardUpdate');
 
         dynamic playerIndex = -1;
-        dynamic playerToEdit = {};
+        dynamic playerToEdit = <String, dynamic>{};
+        dynamic playerToEditMeta;
         var oldPlayer = board.player;
+        dynamic _newRank ;
+        bool _firstCheck = true;
         board.player!.asMap().forEach((key, value) {
           if(
           value.userId == uid
@@ -215,28 +218,34 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
           ){
             playerToEdit = value.toJson();
             playerToEdit["points"] = board!.points;
-            playerToEdit = Player.fromJson(playerToEdit);
+            playerToEditMeta = Player.fromJson(playerToEdit);
             playerIndex = key;
+          }
+          if(value.points! < board!.points!.toInt() && _firstCheck){
+            _newRank = key;
+            _firstCheck = false;
           }
         });
         if(playerIndex != -1){
           board.player!.removeAt(playerIndex);
-          board.player!.add(playerToEdit);
+          board.player!.add(playerToEditMeta);
+          oldPlayer!.removeAt(playerIndex);
         }
 
-        board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
-        logPrint.d('board = ${board.toJson()}');
+        // board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
+        // logPrint.d('board = ${board.toJson()}');
 
         var _newUpdatedBoard = board.toJson();
         // todo : selectedPlayer, oldIndex, newIndex, oldPlayer(keep or delete)
         _newUpdatedBoard.addAll({
           "selectedPlayer": uid,
           "oldIndex": playerIndex,
-          "newIndex": board.player!.indexWhere((e) => e.userId == uid),
+          "newIndex": _newRank,
           "oldPlayer": oldPlayer!.map((e) => e.toJson()).toList(),
+          "selectedPlayerData" : playerToEdit
         });
         board = Board.fromJson(_newUpdatedBoard);
-        logPrint.d('board = ${board.toJson()}');
+        logPrint.d('_newUpdatedBoard = $_newUpdatedBoard');
     }
     return board;
   }
