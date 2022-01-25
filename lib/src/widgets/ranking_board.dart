@@ -9,8 +9,9 @@ import 'package:provider/src/provider.dart';
 
 
 class RankingBoardPage extends StatelessWidget {
-   const RankingBoardPage({Key? key, required this.board}) : super(key: key);
+   const RankingBoardPage({Key? key, required this.board, required this.userId}) : super(key: key);
   final Board board;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -60,20 +61,20 @@ class RankingBoardPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: MediaQuery.of(context).size.height*.6,
-                child: RankAnimationWidget(board:board, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex,))),
+                child: RankAnimationWidget(userId: userId, player:board.selectedPlayerData, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex,))),
       ],
     );
   }
 }
 
 class RankAnimationWidget extends StatelessWidget {
-  RankAnimationWidget({Key? key,this.board, this.players, this.oldIndex, this.newIndex}) : super(key: key);
+  RankAnimationWidget({Key? key,this.player, this.players, this.oldIndex, this.newIndex, this.userId = ''}) : super(key: key);
 
   final dynamic players;
   final dynamic oldIndex;
   final dynamic newIndex;
-  final dynamic board;
-  dynamic _userId;
+  final dynamic player;
+  final String userId;
 
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final scrollController = ScrollController();
@@ -83,15 +84,13 @@ class RankAnimationWidget extends StatelessWidget {
     // var oldIndex = 2;
     // var newIndex = 1;
     var totalItems = players.length;
-    // final scrollHeight = context.findAncestorRenderObjectOfType<RenderSliver>()!.constraints.viewportMainAxisExtent;
-    final scrollHeight = totalItems*90;
-    var _removedItem = board.selectedPlayerData;
-    logPrint.d("adjustList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${board.selectedPlayerData.toJson()}");
+    final scrollHeight = (totalItems+1)*80;
+    logPrint.d("adjustList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${player.toJson()}");
 
 
 
-    // await Future.delayed(const Duration(seconds: 1));
-    await scrollController.animateTo(scrollHeight*(oldIndex-1)/totalItems, duration: const Duration(milliseconds: 1), curve: Curves.linear);
+    await scrollController.animateTo(scrollHeight*(oldIndex-4)/totalItems, duration: const Duration(milliseconds: 500), curve: Curves.linear);
+    // scrollController.jumpTo(scrollHeight*(oldIndex-4)/totalItems);
 
     _removeAnimation() async{
       listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
@@ -99,15 +98,15 @@ class RankAnimationWidget extends StatelessWidget {
     }
 
     _insertAnimation() async{
-      players.insert(newIndex, _removedItem);
-      listKey.currentState!.insertItem(newIndex, duration: const Duration(milliseconds: 4000));
+      players.insert(newIndex, player);
+      listKey.currentState!.insertItem(newIndex, duration: const Duration(milliseconds: 3000));
     }
 
     _scrollAnimation() async{
-      scrollController.animateTo(scrollHeight*(newIndex-1)/totalItems, duration: const Duration(milliseconds: 4000), curve: Curves.easeInOutExpo);
+      scrollController.animateTo(scrollHeight*(newIndex-4)/totalItems, duration: const Duration(milliseconds: 2000), curve: Curves.easeInQuart);
       await Future.delayed(const Duration(seconds: 1));
     }
-    if(_removedItem.name == '' || _removedItem.name == null){
+    if(player.name != '' && player.name != null){
       // _removeAnimation();
       _insertAnimation();
       _scrollAnimation();
@@ -124,13 +123,15 @@ class RankAnimationWidget extends StatelessWidget {
       position: Tween<Offset>(
         begin: Offset(0, (oldIndex-newIndex).toDouble()),
         end: const Offset(0, 0),
-      ).animate(animation),
+      ).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeInOutBack)
+        // animation
+          ),
       child: InkWell(
         onTap: (){
-          // todo : change
           adjustList(context);
         },
-        child: PlayerRowWidget(player: item, index: index, userId: _userId,),
+        child: PlayerRowWidget(player: item, index: index, userId: userId,),
       ),
     );
   }
@@ -139,8 +140,7 @@ class RankAnimationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => adjustList(context));
     // todo :  get userId
-    _userId = context.select((GamificationBloc bloc) => bloc.state.userData!.uid);
-    // _userId = GameUserData().uid;
+    // userId = context.select((GamificationBloc bloc) => bloc.state.userData!.uid);
     return AnimatedList(
       shrinkWrap: true,
       controller: scrollController,

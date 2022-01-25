@@ -202,42 +202,36 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if(board!.type == 'leaderBoardUpdate'){
         logPrint.d('processing Board type = leaderBoardUpdate');
         // todo : sort this function
-        dynamic playerIndex = -1;
-        dynamic playerToEdit = <String, dynamic>{};
-        dynamic playerToEditMeta;
-        var oldPlayer = board.player;
-        dynamic _newRank ;
-        bool _firstCheck = true;
-        board.player!.asMap().forEach((key, value) {
-          if(
-          value.userId == uid
-          ){
-            playerToEdit = value.toJson();
-            playerToEdit["points"] = board!.points;
-            playerToEditMeta = Player.fromJson(playerToEdit);
-            playerIndex = key;
-          }
-          if(value.points! < board!.points!.toInt() && _firstCheck){
-            _newRank = key;
-            _firstCheck = false;
+        dynamic _playerIndex = -1;
+        dynamic _playerToEdit = <String, dynamic>{};
+        board.player?.asMap().forEach((key, value) {
+          if(value.userId == uid){
+            _playerToEdit = value.toJson();
+            _playerToEdit["points"] = board!.points;
+            _playerIndex = key;
           }
         });
-        if(playerIndex != -1){
-          board.player!.removeAt(playerIndex);
-          board.player!.add(playerToEditMeta);
-          oldPlayer!.removeAt(playerIndex);
+        if(_playerIndex != -1){
+          board.player!.removeAt(_playerIndex);
+          board.player!.add(Player.fromJson(_playerToEdit));
         }
 
-        // board.player!.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
+        board.player?.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
+        var _newRank = board.player?.indexWhere((element) => element.userId == uid);
+        if(_newRank != -1) {
+          _playerToEdit = board.player?.removeAt(_newRank!);
+        }
+
+
         // logPrint.d('board = ${board.toJson()}');
 
         var _newUpdatedBoard = board.toJson();
         _newUpdatedBoard.addAll({
           "selectedPlayer": uid,
-          "oldIndex": playerIndex,
+          "oldIndex": _playerIndex,
           "newIndex": _newRank,
-          "oldPlayer": (oldPlayer??[]).map((e) => e.toJson()).toList(),
-          "selectedPlayerData" : playerToEdit
+          "oldPlayer": board.player?.map((e) => e.toJson()).toList(),
+          "selectedPlayerData" : _playerToEdit.toJson()
         });
         board = Board.fromJson(_newUpdatedBoard);
         logPrint.d('_newUpdatedBoard = $_newUpdatedBoard');

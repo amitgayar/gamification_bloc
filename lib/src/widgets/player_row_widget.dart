@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../utils/util_functions.dart';
 
 class PlayerRowWidget extends StatelessWidget {
 
@@ -11,6 +12,9 @@ class PlayerRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   logPrint.d("player widget size = ${context.size}");
+    // });
     return Container(
       color: player.userId == userId?Colors.blueGrey[100]:null,
       padding: const EdgeInsets.all(16),
@@ -34,7 +38,7 @@ class PlayerRowWidget extends StatelessWidget {
                     backgroundColor: Colors.blueGrey,
                     child: ClipOval(
                       child: Image.network(
-                        player.image!,
+                        player.image??'',
                         width: 40.0,
                         errorBuilder:  (context, error, stackTrace) {
                           return const Icon(CupertinoIcons.person);
@@ -50,7 +54,7 @@ class PlayerRowWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                player.name!,
+                player.name??'',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w900,

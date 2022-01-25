@@ -121,19 +121,20 @@ Map<String, dynamic> gamificationDataReceive = {
           "userId": "PQR12"
         },
         {
+          "name": "Amit Gayar",
+          "points": 535,
+          "image": "https://source.unsplash.com/random/200x200?sig=2",
+          "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
+        },
+        {
           "name": "QRS",
           "points": 515,
           "image": "image.com",
           "userId": "QRS12"
         },
-        {
-          "name": "Amit Gayar",
-          "points": 443,
-          "image": "https://source.unsplash.com/random/200x200?sig=2",
-          "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
-        }
+
       ],
-      "points": 1000 // todo: new points for leaderBoardUpdate animation
+      "points": 738 // todo: new points for leaderBoardUpdate animation
     }
   ]
 };
