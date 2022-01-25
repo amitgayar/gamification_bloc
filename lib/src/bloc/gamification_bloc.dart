@@ -122,8 +122,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "userId": event.userId,
       "eventData": _eventData,
     };
-    // todo : store campaign id to DB HIVE and gameMap
-    // Todo : loading screen
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
     var _boards = _myGame.board??[];
@@ -135,13 +133,13 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
     emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
         campaignList: _campaignList.campaign, userData: _user));
-    // Todo : pop loading screen
   }
 
   void _gameLoginEvent(
       GameLoginEvent event,
       Emitter<GameState> emit,
       )async{
+    // todo : login cred storing
     var _data = state.copyWith();
     Map _eventData = {};
     _eventData["firstGame"] = await checkInitialPlay();
@@ -160,7 +158,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GamificationDataMeta? _myGame;
     if(_data.userData!.uid != ''){
       _user = GameUserData.fromJson(event.loginCred);
-      // Todo : loading screen
       _myGame = await _gameRepository.postGameData(_new);
     }
     else{
@@ -203,8 +200,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     logPrint.d('processing Board with uid : $uid');
 
     if(board!.type == 'leaderBoardUpdate'){
-        logPrint.d('processBoard board.type = leaderBoardUpdate');
-
+        logPrint.d('processing Board type = leaderBoardUpdate');
+        // todo : sort this function
         dynamic playerIndex = -1;
         dynamic playerToEdit = <String, dynamic>{};
         dynamic playerToEditMeta;
@@ -214,7 +211,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         board.player!.asMap().forEach((key, value) {
           if(
           value.userId == uid
-          // todo :  value.userId == prefs.getString('uid')
           ){
             playerToEdit = value.toJson();
             playerToEdit["points"] = board!.points;
@@ -236,7 +232,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         // logPrint.d('board = ${board.toJson()}');
 
         var _newUpdatedBoard = board.toJson();
-        // todo : selectedPlayer, oldIndex, newIndex, oldPlayer(keep or delete)
         _newUpdatedBoard.addAll({
           "selectedPlayer": uid,
           "oldIndex": playerIndex,
@@ -277,6 +272,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       return false;
     }
   }
+  // todo : checkInitialAppOpen and checkInitialPlay -- where to put in POST gameData API
 
 
 }
