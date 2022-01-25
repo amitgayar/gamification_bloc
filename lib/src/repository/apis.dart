@@ -399,7 +399,6 @@ class GamificationApiProvider {
     if (testApi) return GamificationDataMeta.fromJson(gamificationDataInit);
     var _url = baseUrl + "/gameData/$userId";
     logPrint.d("fetching GameData from URL- $_url");
-    final response = await http.get(Uri.parse(_url));
     http.Response _response;
     try {
       _response = await http.get(Uri.parse(_url))
@@ -476,7 +475,7 @@ class GamificationApiProvider {
   Map<String, dynamic> parseResponse(http.Response response) {
     final responseString = jsonDecode(response.body);
     if (response.statusCode == successCode) {
-      logPrint.d('responseString from gameData API : $responseString');
+      logPrint.d('responseString from API : $responseString');
       return responseString;
     } else {
       throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');

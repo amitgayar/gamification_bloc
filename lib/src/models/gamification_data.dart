@@ -18,7 +18,7 @@ class GamificationDataMeta {
     userId = json['userId'] as String?;
     eventData = (json['eventData'] as Map<String,dynamic>?) != null ? EventData.fromJson(json['eventData'] as Map<String,dynamic>) : null;
     board = (json['board'] as List?)?.map((dynamic e) => Board.fromJson(e as Map<String,dynamic>)).toList();
-    gameMap = json['gameMap'] as Map<String,dynamic>?;
+    gameMap = (json['gameMap']) != null?(json['gameMap'] as Map<String,dynamic>?):<String,dynamic>{};
   }
 
   Map<String, dynamic> toJson() {

@@ -236,7 +236,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
           "selectedPlayer": uid,
           "oldIndex": playerIndex,
           "newIndex": _newRank,
-          "oldPlayer": oldPlayer!.map((e) => e.toJson()).toList(),
+          "oldPlayer": (oldPlayer??[]).map((e) => e.toJson()).toList(),
           "selectedPlayerData" : playerToEdit
         });
         board = Board.fromJson(_newUpdatedBoard);
