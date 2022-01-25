@@ -89,8 +89,8 @@ class RankAnimationWidget extends StatelessWidget {
 
 
 
-    await scrollController.animateTo(scrollHeight*(oldIndex-4)/totalItems, duration: const Duration(milliseconds: 500), curve: Curves.linear);
-    // scrollController.jumpTo(scrollHeight*(oldIndex-4)/totalItems);
+    await scrollController.animateTo(scrollHeight*(oldIndex-2)/totalItems, duration: const Duration(milliseconds: 500), curve: Curves.linear);
+    // scrollController.jumpTo(scrollHeight*(oldIndex-2)/totalItems);
 
     _removeAnimation() async{
       listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
@@ -103,7 +103,7 @@ class RankAnimationWidget extends StatelessWidget {
     }
 
     _scrollAnimation() async{
-      scrollController.animateTo(scrollHeight*(newIndex-4)/totalItems, duration: const Duration(milliseconds: 2000), curve: Curves.easeInQuart);
+      scrollController.animateTo(scrollHeight*(newIndex-4)/totalItems, duration: const Duration(milliseconds: 3000), curve: Curves.linear);
       await Future.delayed(const Duration(seconds: 1));
     }
     if(player.name != '' && player.name != null){
@@ -124,7 +124,7 @@ class RankAnimationWidget extends StatelessWidget {
         begin: Offset(0, (oldIndex-newIndex).toDouble()),
         end: const Offset(0, 0),
       ).animate(
-          CurvedAnimation(parent: animation, curve: Curves.easeInOutBack)
+          CurvedAnimation(parent: animation, curve: Curves.easeOutBack)
         // animation
           ),
       child: InkWell(
