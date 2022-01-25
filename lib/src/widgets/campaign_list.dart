@@ -4,6 +4,7 @@ import '../models/campaign_model.dart';
 import 'package:provider/src/provider.dart';
 import '../bloc/gamification_bloc.dart';
 import '../utils/util_functions.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CampaignListWidget extends StatelessWidget {
   const CampaignListWidget({Key? key, required this.onSelection}) : super(key: key);
@@ -37,6 +38,7 @@ class CampaignListWidget extends StatelessWidget {
             children: [
               for(var campaign in _campaignList)
                 Container(
+                  // color: Colors.white70,
                   padding: const EdgeInsets.all(4),
                   margin: const EdgeInsets.all(4),
                   child: InkWell(
@@ -61,8 +63,12 @@ class CampaignListWidget extends StatelessWidget {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Text(campaign.name!.toString().toCapitalized(),
-                                style: Theme.of(context).textTheme.headline6,
+                              child: Shimmer.fromColors(
+                                  baseColor: Colors.black87,
+                                  highlightColor: Colors.orangeAccent[100]!,
+                                child: Text(campaign.name!.toString().toCapitalized(),
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
                               ),
                             ),
                             Expanded(
