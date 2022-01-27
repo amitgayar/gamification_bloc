@@ -28,10 +28,12 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if (event is GameLoadingEvent) return _onGameLoading(event, emit);
     if (event is GameLoadedEvent) return _onGameLoad(event, emit);
     if (event is GameFinishedEvent) return _gameFinishedEvent(event, emit);
+    if (event is CampaignADEvent) return _campaignAdEvent(event, emit);
     if (event is ShowBoardEvent) return _showBoardEvent(event, emit);
     if (event is GameLoginEvent) return _gameLoginEvent(event, emit);
     if (event is GameSharedEvent) return _gameShareEvent(event, emit);
     if (event is SelectCampaign) return _selectCampaignEvent(event, emit);
+
 
 
 
@@ -133,6 +135,34 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
     emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
         campaignList: _campaignList.campaign, userData: _user));
+  }
+
+  void _campaignAdEvent(
+      CampaignADEvent event,
+      Emitter<GameState> emit,
+      )async{
+    logPrint.d("CampaignADEvent called with gameMap = ${event.gameMap}");
+    var _data = state.copyWith();
+    Map _eventData = {};
+    _eventData["gameMap"] = event.gameMap;
+    _eventData["campaignId"] = _data.campaignId;
+    _eventData["firstGame"] = await checkInitialPlay();
+    Map _new = {
+      "eventType": "campaignAd",
+      "userId": event.userId,
+      "eventData": _eventData,
+    };
+    final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+    var _boards = _myGame.board??[];
+    Board? _processedBoard;
+
+    if(_boards.isNotEmpty){
+      _processedBoard =  processBoard(_boards[0], event.userId) ;
+    }
+
+    emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
+        campaignList: _campaignList.campaign, userData: _data.userData));
   }
 
   void _gameLoginEvent(

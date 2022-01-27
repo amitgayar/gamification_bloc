@@ -400,13 +400,13 @@ class GamificationApiProvider {
     try {
       _response = await http.get(Uri.parse(_url))
           .timeout(const Duration(seconds: 10));
-      return GamificationDataMeta.fromJson(parseResponse(_response));
+      return GamificationDataMeta.fromJson({"gameMap" : parseResponse(_response)});
     } on TimeoutException catch (e) {
       logPrint.w('Timeout in fetching GameData : $e');
-      return GamificationDataMeta.fromJson(gamificationDataDemo);
+      return GamificationDataMeta.fromJson({});
     } on Error catch (e) {
       logPrint.w('Error in fetching GameData: $e');
-      return GamificationDataMeta.fromJson(gamificationDataDemo);
+      return GamificationDataMeta.fromJson({});
     }
   }
 
