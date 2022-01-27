@@ -26,12 +26,12 @@ class GameFinishedEvent extends GameEvent {
   List<Object> get props => [gameMap, userId];
 }
 class CampaignADEvent extends GameEvent {
-  const CampaignADEvent({required this.gameMap, required this.userId});
-  final Map<String, dynamic> gameMap;
+  const CampaignADEvent({required this.adWatched, required this.userId});
+  final int adWatched;
   final String userId;
 
   @override
-  List<Object> get props => [gameMap, userId];
+  List<Object> get props => [adWatched, userId];
 }
 
 

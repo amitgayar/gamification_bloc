@@ -267,6 +267,16 @@ Map<String, dynamic> gamificationShareDataReceive = {
     }
   ]
 };
+Map<String, dynamic> gamificationCampaignDataReceive = {
+  "board": [
+    {
+      "type": "normal",
+      "title": "ad campaign success",
+      "subtitle": "Awarded 120 gems",
+      "image": "gif1.com",
+    }
+  ]
+};
 
 Map<String, dynamic> campaignJson = {
   "campaign" : [
@@ -424,6 +434,10 @@ class GamificationApiProvider {
       if (postData['eventType'] == "share"){
         logPrint.d('testApi : gameShared event  - $gamificationShareDataReceive');
         return GamificationDataMeta.fromJson(gamificationShareDataReceive);
+      }
+      if (postData['eventType'] == "campaignAd"){
+        logPrint.d('testApi : campaignAd event  - $gamificationCampaignDataReceive');
+        return GamificationDataMeta.fromJson(gamificationCampaignDataReceive);
       }
       else{
         logPrint.d('testApi : unknown? event -gamificationDataReceive returned');

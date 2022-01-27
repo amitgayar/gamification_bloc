@@ -33,10 +33,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if (event is GameLoginEvent) return _gameLoginEvent(event, emit);
     if (event is GameSharedEvent) return _gameShareEvent(event, emit);
     if (event is SelectCampaign) return _selectCampaignEvent(event, emit);
-
-
-
-
   }
 
 
@@ -126,14 +122,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-    var _boards = _myGame.board??[];
-    Board? _processedBoard;
 
-    if(_boards.isNotEmpty){
-      _processedBoard =  processBoard(_boards[0], event.userId) ;
-    }
-
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
+    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, event.userId),
         campaignList: _campaignList.campaign, userData: _user));
   }
 
@@ -141,27 +131,20 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       CampaignADEvent event,
       Emitter<GameState> emit,
       )async{
-    logPrint.d("CampaignADEvent called with gameMap = ${event.gameMap}");
+    logPrint.d("CampaignAdEvent called with adWatched count = ${event.adWatched}");
     var _data = state.copyWith();
     Map _eventData = {};
-    _eventData["gameMap"] = event.gameMap;
+    _eventData["adWatched"] = event.adWatched;
     _eventData["campaignId"] = _data.campaignId;
-    _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
       "eventType": "campaignAd",
       "userId": event.userId,
       "eventData": _eventData,
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-    var _boards = _myGame.board??[];
-    Board? _processedBoard;
+    final _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
-    if(_boards.isNotEmpty){
-      _processedBoard =  processBoard(_boards[0], event.userId) ;
-    }
-
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _processedBoard,
+    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, event.userId),
         campaignList: _campaignList.campaign, userData: _data.userData));
   }
 
@@ -225,7 +208,17 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
 
 
+  ///
+  ///
+  ///
+  ///
+  ///
   /// utility functions :
+  ///
+  ///
+  ///
+  ///
+  ///
   Board? processBoard(Board? board, String? uid) {
     logPrint.d('processing Board with uid : $uid');
 
@@ -296,7 +289,17 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       return false;
     }
   }
-  // todo : checkInitialAppOpen and checkInitialPlay -- where to put in POST gameData API
+
+  getBoard(myGame, userId){
+    var _boards = myGame.board??[];
+    Board? _processedBoard;
+    if(_boards.isNotEmpty){
+      _processedBoard =  processBoard(_boards[0], userId);
+    }
+    return _processedBoard;
+  }
+
+// todo : checkInitialAppOpen and checkInitialPlay -- where to put in POST gameData API
 
 
 }
