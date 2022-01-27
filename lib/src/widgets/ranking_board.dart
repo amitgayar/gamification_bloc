@@ -124,7 +124,7 @@ class RankAnimationWidget extends StatelessWidget {
         begin: Offset(0, (oldIndex-newIndex).toDouble()),
         end: const Offset(0, 0),
       ).animate(
-          CurvedAnimation(parent: animation, curve: Curves.easeOutBack)
+          CurvedAnimation(parent: animation, curve: Curves.easeInOutQuad)
         // animation
           ),
       child: InkWell(

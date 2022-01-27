@@ -22,6 +22,8 @@ class Campaign {
   String? desc;
   String? image;
   Map? gameMap;
+  bool? isAd;
+  int? adCount;
 
   Campaign({
     this.id,
@@ -29,14 +31,18 @@ class Campaign {
     this.desc,
     this.image,
     this.gameMap,
+    this.isAd,
+    this.adCount,
   });
 
   Campaign.fromJson(Map<String, dynamic> json) {
     id = json['id'] as int?;
+    adCount = json['adCount'] as int?;
+    isAd = json['isAd'] as bool?;
     name = json['name'] as String?;
     desc = json['desc'] as String?;
     image = json['image'] as String?;
-    gameMap = json['gameMap'] as Map<String,dynamic>? ;
+    gameMap = json['gameMap'] as Map<String,dynamic>?;
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +51,8 @@ class Campaign {
     json['name'] = name;
     json['desc'] = desc;
     json['image'] = image;
+    json['adCount'] = adCount;
+    json['isAd'] = isAd;
     json['gameMap'] = gameMap;
     return json;
   }

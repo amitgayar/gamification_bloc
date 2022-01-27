@@ -63,13 +63,13 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       GameLoadedEvent event,
       Emitter<GameState> emit,
       ) async {
+    logPrint.d('GameLoadedEvent called');
 
     final GamificationDataMeta myGame = await _gameRepository.getGameData(event.userId);
-    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+    final  _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
-    var _gameData = myGame.toJson();
     emit(GameState.gameLoadedState(
-      gameData: GamificationDataMeta.fromJson(_gameData),
+      gameData: myGame,
         campaignList: _campaignList.campaign,
       userData: GameUserData()
     )
@@ -108,7 +108,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       GameFinishedEvent event,
       Emitter<GameState> emit,
       )async{
-
+    logPrint.d("_gameFinishedEvent called with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
     var _userJson = _data.userData!.toJson();
     _userJson.addAll({'uid':event.userId});

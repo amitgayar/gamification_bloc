@@ -277,7 +277,7 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
         "hint": 4,
-        "life": 4,
+        "life": 1,
         "level": 0
         // "level": 0,1,2,3  (int value [0,1,2,3])
 
@@ -318,15 +318,11 @@ Map<String, dynamic> campaignJson = {
     },
     {
       "id": 4,
-      "name": "Monthly Challenge",
-      "desc": "daily challenge for progressing",
-      "image": "https://source.unsplash.com/random/200x200?sig=5",
-      "gameMap": {
-        "hint": 4,
-        "life": 4,
-        "level": 1
-
-      }
+      "isAd": true,
+      "adCount": 2,
+      "name": "Ad Benefits",
+      "desc": "Watch ad to judge to get more hints",
+      "image": "https://source.unsplash.com/random/200x200?sig=5"
     }
   ]
 };
@@ -403,7 +399,7 @@ class GamificationApiProvider {
     http.Response _response;
     try {
       _response = await http.get(Uri.parse(_url))
-          .timeout(const Duration(seconds: 6));
+          .timeout(const Duration(seconds: 10));
       return GamificationDataMeta.fromJson(parseResponse(_response));
     } on TimeoutException catch (e) {
       logPrint.w('Timeout in fetching GameData : $e');
@@ -460,7 +456,7 @@ class GamificationApiProvider {
     http.Response _response;
     try {
       _response = await http.get(Uri.parse(_url))
-          .timeout(const Duration(seconds: 6));
+          .timeout(const Duration(seconds: 10));
       return CampaignListMeta.fromJson(parseResponse(_response));
     } on TimeoutException catch (e) {
       logPrint.w('Timeout in fetching campaign : $e');
