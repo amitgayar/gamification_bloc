@@ -131,11 +131,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       CampaignADEvent event,
       Emitter<GameState> emit,
       )async{
-    logPrint.d("CampaignAdEvent called with adWatched count = ${event.adWatched}");
+    logPrint.d("CampaignAdEvent called with adWatched map = ${event.data}");
     var _data = state.copyWith();
     Map _eventData = {};
-    _eventData["adWatched"] = event.adWatched;
-    _eventData["campaignId"] = _data.campaignId;
+    _eventData["adWatched"] = event.data['adWatched'];
+    _eventData["campaignId"] = event.data['campaignId'];
     Map _new = {
       "eventType": "campaignAd",
       "userId": event.userId,
@@ -242,7 +242,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
         board.player?.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
         var _newRank = board.player?.indexWhere((element) => element.userId == uid);
         if(_newRank != -1) {
-          _playerToEdit = board.player?.removeAt(_newRank!);
+          _playerToEdit = board.player?.removeAt(_newRank!).toJson;
         }
 
 
@@ -254,7 +254,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
           "oldIndex": _playerIndex,
           "newIndex": _newRank,
           "oldPlayer": board.player?.map((e) => e.toJson()).toList(),
-          "selectedPlayerData" : _playerToEdit.toJson()
+          "selectedPlayerData" : _playerToEdit
         });
         board = Board.fromJson(_newUpdatedBoard);
         logPrint.d('_newUpdatedBoard = $_newUpdatedBoard');
