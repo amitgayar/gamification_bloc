@@ -15,6 +15,9 @@ class RankingBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var data = processBoard(board.player??[], board.points??-1, userId);
+
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -61,53 +64,63 @@ class RankingBoardPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: MediaQuery.of(context).size.height*.6,
-                child: RankAnimationWidget(userId: userId, player:board.selectedPlayerData, players:board.oldPlayer, oldIndex : board.oldIndex, newIndex: board.newIndex,))),
+                child: RankAnimationWidget(
+                  userId: userId,
+                  players: data[0],
+                  oldIndex: data[1],
+                  newIndex: data[2],
+                  editedPlayer: data[3]
+                ))),
       ],
     );
   }
 }
 
 class RankAnimationWidget extends StatelessWidget {
-  RankAnimationWidget({Key? key,this.player, this.players, this.oldIndex, this.newIndex, this.userId = ''}) : super(key: key);
+  RankAnimationWidget({Key? key, required this.players, required this.userId, required this.oldIndex, required this.newIndex, required this.editedPlayer}) : super(key: key);
 
   final dynamic players;
-  final dynamic oldIndex;
-  final dynamic newIndex;
-  final dynamic player;
-  final String userId;
+  final dynamic userId;
+  final int oldIndex;
+  final int newIndex;
+  final Player editedPlayer;
 
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final scrollController = ScrollController();
 
 
-  adjustList(context) async{
+  animateList(context) async{
+
+    // dynamic player;
     // var oldIndex = 2;
     // var newIndex = 1;
     var totalItems = players.length;
     final scrollHeight = (totalItems+1)*80;
-    logPrint.d("adjustList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${player.toJson()}");
-
-
-
-    await scrollController.animateTo(scrollHeight*(oldIndex-2)/totalItems, duration: const Duration(milliseconds: 500), curve: Curves.linear);
-    // scrollController.jumpTo(scrollHeight*(oldIndex-2)/totalItems);
+    logPrint.d("animateList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${editedPlayer.toJson()}");
 
     _removeAnimation() async{
       listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
       // await Future.delayed(const Duration(milliseconds: 400));
     }
 
+
+    await scrollController.animateTo(scrollHeight*(oldIndex)/totalItems, duration: const Duration(milliseconds: 1500), curve: Curves.linear);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // scrollController.jumpTo(scrollHeight*(oldIndex-2)/totalItems);
+
+
     _insertAnimation() async{
-      players.insert(newIndex, player);
+      players.insert(newIndex, editedPlayer);
       listKey.currentState!.insertItem(newIndex, duration: const Duration(milliseconds: 3000));
     }
 
     _scrollAnimation() async{
-      scrollController.animateTo(scrollHeight*(newIndex-4)/totalItems, duration: const Duration(milliseconds: 3000), curve: Curves.linear);
+      scrollController.animateTo(scrollHeight*(newIndex)/totalItems, duration: const Duration(milliseconds: 3000), curve: Curves.linear);
       await Future.delayed(const Duration(seconds: 1));
     }
-    if(player.name != '' && player.name != null){
-      // _removeAnimation();
+    if(oldIndex != -1){
+      // await _removeAnimation();
       _insertAnimation();
       _scrollAnimation();
     }
@@ -127,31 +140,56 @@ class RankAnimationWidget extends StatelessWidget {
           CurvedAnimation(parent: animation, curve: Curves.easeInOutQuad)
         // animation
           ),
-      child: InkWell(
-        onTap: (){
-          adjustList(context);
-        },
-        child: PlayerRowWidget(player: item, index: index, userId: userId,),
-      ),
+      child: PlayerRowWidget(player: item, index: index, userId: userId,)
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => adjustList(context));
-    // todo :  get userId
-    // userId = context.select((GamificationBloc bloc) => bloc.state.userData!.uid);
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => animateList(context ));
+
     return AnimatedList(
       shrinkWrap: true,
       controller: scrollController,
       key: listKey,
       initialItemCount: players.length,
       itemBuilder: (context, index, animation) {
-        // todo : change
-        // if(index==players.length-1)adjustList(context);
         return slideIt(context, index, animation); // Refer step 3
       },
     );
   }
+}
+
+processBoard(List players, int points,  userId) {
+  logPrint.d('processing Leader Animation Board with uid : $userId');
+  int _oldIndex = -1;
+  Player _playerEdit = Player(name:'');
+  int _newRank = -1;
+
+
+  if(players.isEmpty || players.indexWhere((element) => element.userId == userId)== -1 || points == -1){
+    return [players, _oldIndex, _newRank, _playerEdit];
+  }
+
+
+
+  for (var i = 0; i < players.length; i++){
+    if(players[i].userId == userId){
+      _playerEdit = players[i].copyWith(points:points);
+      _oldIndex = i;
+      logPrint.d('processing Board (for loop) -  oldIndex : $_oldIndex - playerEdit = ${_playerEdit.toJson()} ');
+    }
+  }
+
+  if(_oldIndex != -1){
+    players.removeAt(_oldIndex);
+    players.add(_playerEdit);
+    players.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
+    _newRank = players.indexWhere((element) => element.userId == userId);
+    _playerEdit = players.removeAt(_newRank);
+  }
+  logPrint.d('processing Board -  oldIndex = $_oldIndex, newIndex = $_newRank, playerEdit = ${_playerEdit.toJson()}');
+  return [players, _oldIndex, _newRank, _playerEdit];
 }
 

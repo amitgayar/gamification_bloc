@@ -72,6 +72,7 @@ class Board {
   String? title;
   String? subtitle;
   String? image;
+  String? share;
   Map? table;
   List<Player>? player;
   String? selectedPlayer;
@@ -79,7 +80,7 @@ class Board {
   int? oldIndex;
   int? newIndex;
   List<Player>? oldPlayer;
-  Player? selectedPlayerData;
+  // Player? selectedPlayerData;
 
 
 
@@ -88,6 +89,7 @@ class Board {
     this.title,
     this.subtitle,
     this.image,
+    this.share,
     this.table,
     this.player,
     this.selectedPlayer,
@@ -95,7 +97,8 @@ class Board {
     this.oldIndex,
     this.newIndex,
     this.oldPlayer,
-    this.selectedPlayerData
+
+    // this.selectedPlayerData
 
 
   });
@@ -105,10 +108,11 @@ class Board {
     title = json['title'] ??'';
     subtitle = json['subtitle'] ??'';
     image = json['image']??'';
+    share = json['share'] as String?;
     table = json['table'] as Map<String,dynamic>?;
     player = json['player']==null?[]:(json['player'] as List?)?.map((dynamic e) => Player.fromJson(e as Map<String,dynamic>)).toList();
     selectedPlayer = json['selectedPlayer'] ??'';
-    selectedPlayerData = Player.fromJson((json['selectedPlayerData']?? <String,dynamic>{}));
+    // selectedPlayerData = Player.fromJson(json['selectedPlayerData'] as Map<String,dynamic>);
     points = json['points'] as int?;
     oldIndex = json['oldIndex'] as int?;
     newIndex = json['newIndex'] as int?;
@@ -121,10 +125,11 @@ class Board {
     json['title'] = title;
     json['subtitle'] = subtitle;
     json['image'] = image;
+    json['share'] = share;
     json['table'] = table;
     json['player'] = player?.map((e) => e.toJson()).toList();
     json['selectedPlayer'] = selectedPlayer;
-    json['selectedPlayerData'] = selectedPlayerData;
+    // json['selectedPlayerData'] = selectedPlayerData;
     json['points'] = points;
     json['oldIndex'] = oldIndex;
     json['newIndex'] = newIndex;
@@ -160,5 +165,13 @@ class Player {
     json['image'] = image;
     json['userId'] = userId;
     return json;
+  }
+  Player copyWith({points}){
+    return Player(
+        name : name,
+        points : points,
+        image: image,
+        userId : userId);
+
   }
 }

@@ -50,6 +50,7 @@ Map<String, dynamic> gamificationDataReceive = {
       "title": "Level 1 completed",
       "subtitle": "Awarded 40 gems. You stand second",
       "image": "gif1.com",
+      "share": "normal share message",
       "table": {
         "points": 45,
         "gems": 12
@@ -65,6 +66,7 @@ Map<String, dynamic> gamificationDataReceive = {
     {
       "type": "leaderBoardUpdate",
       "title": "Title 2",
+      "share": "leader share message",
       "player": [
         {
           "name": "ABC",
@@ -134,7 +136,7 @@ Map<String, dynamic> gamificationDataReceive = {
         },
 
       ],
-      "points": 738 // todo: new points for leaderBoardUpdate animation
+      "points": 800
     }
   ]
 };

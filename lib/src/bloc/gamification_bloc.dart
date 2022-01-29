@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart';
 import '../models/campaign_model.dart';
 import '../models/user.dart';
 import '../repository/gamification_repository.dart';
@@ -13,7 +14,6 @@ part 'gamification_state.dart';
 
 
 
-/// git resolved 3
 class GamificationBloc extends Bloc<GameEvent, GameState> {
   GamificationBloc({GameRepository? gameRepository})
       : _gameRepository = gameRepository!,
@@ -63,13 +63,13 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       ) async {
     logPrint.d('GameLoadedEvent called');
 
-    final GamificationDataMeta myGame = await _gameRepository.getGameData(event.userId);
+    final GamificationDataMeta _myGame = await _gameRepository.getGameData(event.userId);
     final  _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
     emit(GameState.gameLoadedState(
-      gameData: myGame,
+        gameData: _myGame,
         campaignList: _campaignList.campaign,
-      userData: GameUserData()
+        userData: GameUserData()
     )
     );
   }
@@ -79,24 +79,14 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       Emitter<GameState> emit,
       )async{
     logPrint.d('next ShowBoardEvent called');
-
     var _data = state.copyWith();
-    var _boards = _data.gameData!.board;
-    Board? _processedBoard;
-
-    if(_boards! != [] && event.index! < _boards.length){
-      logPrint.d('processBoard called');
-      _processedBoard =  processBoard(_boards[event.index!], _data.userData!.uid);
-    }
-
-
     emit(
         GameState.gameLoadedState(
-        boardIndex: event.index,
-        gameData: _data.gameData,
-          board: _processedBoard,
+          boardIndex: event.index,
+          gameData: _data.gameData,
+          board: getBoard(_data.gameData!, event.index),
           campaignList: _data.campaignList,
-          userData: _data.userData
+          userData: _data.userData,
     ));
   }
 
@@ -122,8 +112,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+    var _board = getBoard(_myGame,0);
 
-    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, event.userId),
+    emit(GameState.gameLoadedState(gameData: _myGame, board: _board,
         campaignList: _campaignList.campaign, userData: _user));
   }
 
@@ -143,8 +134,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     final _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-
-    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, event.userId),
+    var _board = getBoard(_myGame, 0);
+    emit(GameState.gameLoadedState(gameData: _myGame, board: _board,
         campaignList: _campaignList.campaign, userData: _data.userData));
   }
 
@@ -181,7 +172,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
    /// fetch campaigns
     var _campaignList = await _gameRepository.fetchCampaignData(_data.userData!.uid);
 
-    emit(GameState.gameLoadedState(gameData: _myGame, board: (_myGame!.board!.isEmpty || _myGame.board == null)?null:_myGame.board![0],
+    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, 0),
         campaignList: _campaignList.campaign, userData: _user));
   }
 
@@ -198,7 +189,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
     logPrint.d('Game-shared in bloc ${_myGame.board}');
-    emit(GameState.gameLoadedState(gameData: _myGame, board: (_myGame.board!.isEmpty || _myGame.board == null)?null:_myGame.board![0],
+    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, 0),
                              campaignList: _data.campaignList, campaignId: _data.campaignId, userData: _data.userData
     ));
   }
@@ -219,48 +210,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
   ///
   ///
   ///
-  Board? processBoard(Board? board, String? uid) {
-    logPrint.d('processing Board with uid : $uid');
-
-    if(board!.type == 'leaderBoardUpdate'){
-        logPrint.d('processing Board type = leaderBoardUpdate');
-        // todo : sort this function
-        dynamic _playerIndex = -1;
-        dynamic _playerToEdit = <String, dynamic>{};
-        board.player?.asMap().forEach((key, value) {
-          if(value.userId == uid){
-            _playerToEdit = value.toJson();
-            _playerToEdit["points"] = board!.points;
-            _playerIndex = key;
-          }
-        });
-        if(_playerIndex != -1){
-          board.player!.removeAt(_playerIndex);
-          board.player!.add(Player.fromJson(_playerToEdit));
-        }
-
-        board.player?.sort((a,b) => b.points!.compareTo(a.points!.toInt()));
-        var _newRank = board.player?.indexWhere((element) => element.userId == uid);
-        if(_newRank != -1) {
-          _playerToEdit = board.player?.removeAt(_newRank!).toJson;
-        }
-
-
-        // logPrint.d('board = ${board.toJson()}');
-
-        var _newUpdatedBoard = board.toJson();
-        _newUpdatedBoard.addAll({
-          "selectedPlayer": uid,
-          "oldIndex": _playerIndex,
-          "newIndex": _newRank,
-          "oldPlayer": board.player?.map((e) => e.toJson()).toList(),
-          "selectedPlayerData" : _playerToEdit
-        });
-        board = Board.fromJson(_newUpdatedBoard);
-        logPrint.d('_newUpdatedBoard = $_newUpdatedBoard');
-    }
-    return board;
-  }
 
   Future<bool> checkInitialAppOpen() async {
     final SharedPreferences prefs = await _prefs;
@@ -290,11 +239,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  getBoard(myGame, userId){
+  getBoard(myGame, index){
     var _boards = myGame.board??[];
     Board? _processedBoard;
-    if(_boards.isNotEmpty){
-      _processedBoard =  processBoard(_boards[0], userId);
+    if(_boards.isNotEmpty && index < _boards.length){
+        _processedBoard =  _boards[index];
     }
     return _processedBoard;
   }

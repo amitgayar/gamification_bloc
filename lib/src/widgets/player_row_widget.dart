@@ -20,34 +20,29 @@ class PlayerRowWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
           children: [
-           index!=null? Text(
-              (index + 1).toString(),
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.blueGrey
+           SizedBox(
+             width: 35,
+             child: Text(
+                (index + 1).toString(),
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.blueGrey
+                ),
+
               ),
-
-            ):Container(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Colors.blueGrey,
-                    child: ClipOval(
-                      child: Image.network(
-                        player.image??'',
-                        width: 40.0,
-                        errorBuilder:  (context, error, stackTrace) {
-                          return const Icon(CupertinoIcons.person);
-                        },
-                      ),
-                    ),
-                  ),
-
-                ],
+           ),
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Colors.blueGrey,
+              child: ClipOval(
+                child: Image.network(
+                  player.image??'',
+                  width: 40.0,
+                  errorBuilder:  (context, error, stackTrace) {
+                    return const Icon(CupertinoIcons.person);
+                  },
+                ),
               ),
             ),
 

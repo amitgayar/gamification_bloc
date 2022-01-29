@@ -13,7 +13,9 @@ class GameState extends Equatable {
         List<Campaign>? campaignList, int? campaignId = -1, GameUserData? userData
       })
       : this._(gameData: gameData, boardIndex: boardIndex, board: board,
-       campaignList:campaignList, campaignId:campaignId, userData:userData );
+       campaignList:campaignList, campaignId:campaignId, userData:userData,
+
+  );
 
 
   GameState copyWith(
