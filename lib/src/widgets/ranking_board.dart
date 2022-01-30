@@ -4,7 +4,6 @@ import 'package:flutter/rendering.dart';
 import '../../gamification_bloc.dart';
 import '../models/gamification_data.dart';
 import '../widgets/player_row_widget.dart';
-import 'package:provider/src/provider.dart';
 
 
 
@@ -98,10 +97,10 @@ class RankAnimationWidget extends StatelessWidget {
     final scrollHeight = (totalItems+1)*80;
     logPrint.d("animateList called with oldIndex = $oldIndex newIndex = $newIndex _removedPlayer = ${editedPlayer.toJson()}");
 
-    _removeAnimation() async{
-      listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
-      // await Future.delayed(const Duration(milliseconds: 400));
-    }
+    // _removeAnimation() async{
+    //   listKey.currentState!.removeItem(oldIndex, (_, animation) => slideIt( context, oldIndex, animation), duration: const Duration(milliseconds: 1));
+    //   // await Future.delayed(const Duration(milliseconds: 400));
+    // }
 
 
     await scrollController.animateTo(scrollHeight*(oldIndex)/totalItems, duration: const Duration(milliseconds: 1500), curve: Curves.linear);

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils/util_functions.dart';
 
 class PlayerRowWidget extends StatelessWidget {
 

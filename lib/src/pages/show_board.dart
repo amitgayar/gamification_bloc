@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/normal_board.dart';
 import '../widgets/ranking_board.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import '../bloc/gamification_bloc.dart';
 import '../utils/util_functions.dart';
 import 'package:flutter/cupertino.dart';

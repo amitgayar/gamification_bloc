@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:http/http.dart';
 import '../models/campaign_model.dart';
 import '../models/user.dart';
 import '../repository/gamification_repository.dart';
