@@ -64,6 +64,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     logPrint.d('GameLoadedEvent called');
 
     final GamificationDataMeta _myGame = await _gameRepository.getGameData(event.userId);
+
     final  _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
     emit(GameState.gameLoadedState(

@@ -8,10 +8,7 @@ import "../models/gamification_data.dart";
 import "dart:convert";
 
 Map<String, dynamic> gamificationDataInit = {
- "gameMap" : {
-   "hint": 3,
-   "life": 3
- }
+  "gameMap" : {"hint": 7, "life": 2, "pencil": 0}
 };
 
 Map<String, dynamic> gamificationDataSend = {

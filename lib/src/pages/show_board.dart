@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/normal_board.dart';
 import '../widgets/ranking_board.dart';
-import '../constants/package_constants.dart';
 import 'package:provider/src/provider.dart';
 import '../bloc/gamification_bloc.dart';
 import '../utils/util_functions.dart';
