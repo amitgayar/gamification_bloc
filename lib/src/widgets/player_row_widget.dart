@@ -33,7 +33,7 @@ class PlayerRowWidget extends StatelessWidget {
           backgroundColor: Colors.blueGrey,
           child: ClipOval(
             child: Image.network(
-              player.image ?? '',
+              player.image ?? 'image.com',
               width: 40.0,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(CupertinoIcons.person);
