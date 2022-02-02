@@ -70,8 +70,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       logPrint.w("userId is empty i.e. Not allowed to send request");
 
       /// updating with default values
-      GamificationDataMeta? _data =
-          GamificationDataMeta.fromJson({"hint": 0, "life": 1});
+      GamificationDataMeta? _data = GamificationDataMeta.fromJson({});
       emit(GameState.gameLoadedState(
           isGameLoaded: true, isCampaignLoaded: true, gameData: _data));
     }
@@ -210,6 +209,10 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
     logPrint.d('Game-shared in bloc ${_myGame.board}');
+    GamificationDataMeta? _myInitGame =
+        await _gameRepository.getGameData(event.userId);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+
     emit(GameState.gameLoadedState(
         gameData: _myGame,
         board: getBoard(_myGame, 0),
