@@ -1,17 +1,23 @@
 class CampaignListMeta {
   List<Campaign>? campaign;
+  int? responseCode;
 
   CampaignListMeta({
     this.campaign,
+    this.responseCode,
   });
 
   CampaignListMeta.fromJson(Map<String, dynamic> json) {
-    campaign = (json['campaign'] as List?)?.map((dynamic e) => Campaign.fromJson(e as Map<String,dynamic>)).toList();
+    campaign = (json['campaign'] as List?)
+        ?.map((dynamic e) => Campaign.fromJson(e as Map<String, dynamic>))
+        .toList();
+    responseCode = json['responseCode'] as int?;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = <String, dynamic>{};
     json['campaign'] = campaign?.map((e) => e.toJson()).toList();
+    json['responseCode'] = responseCode;
     return json;
   }
 }
@@ -21,7 +27,7 @@ class Campaign {
   String? name;
   String? desc;
   String? image;
-  Map? gameMap;
+  Map<String, dynamic>? gameMap;
   bool? isAd;
   int? adCount;
 
@@ -42,7 +48,7 @@ class Campaign {
     name = json['name'] as String?;
     desc = json['desc'] as String?;
     image = json['image'] as String?;
-    gameMap = json['gameMap'] as Map<String,dynamic>?;
+    gameMap = json['gameMap'] as Map<String, dynamic>?;
   }
 
   Map<String, dynamic> toJson() {

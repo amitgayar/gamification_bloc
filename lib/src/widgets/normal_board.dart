@@ -43,34 +43,35 @@ class NormalBoardContent extends StatelessWidget {
               );
             },
           ),
-          board.table != null?
-          Column(
-              children: board.table!.entries.map((entry) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 48),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      entry.key.toString().toCapitalized(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      entry.value.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.w700),
-                      // .copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
-              )).toList()
-
-          ):
-          Container(),
+          board.table != null
+              ? Column(
+                  children: board.table!.entries
+                      .map((entry) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 48),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  entry.key.toString().toCapitalized(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  entry.value.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(fontWeight: FontWeight.w700),
+                                  // .copyWith(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList())
+              : Container(),
         ],
       ),
     );

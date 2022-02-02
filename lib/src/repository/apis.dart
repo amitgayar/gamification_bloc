@@ -8,7 +8,8 @@ import "../models/gamification_data.dart";
 import "dart:convert";
 
 Map<String, dynamic> gamificationDataInit = {
-  "gameMap" : {"hint": 7, "life": 2, "pencil": 0}
+  "responseCode": 200,
+  "gameMap": {"hint": 7, "life": 2, "pencil": 0}
 };
 
 Map<String, dynamic> gamificationDataSend = {
@@ -48,10 +49,7 @@ Map<String, dynamic> gamificationDataReceive = {
       "subtitle": "Awarded 40 gems. You stand second",
       "image": "gif1.com",
       "share": "normal share message",
-      "table": {
-        "points": 45,
-        "gems": 12
-      }
+      "table": {"points": 45, "gems": 12}
     },
     {
       "type": "normal",
@@ -83,55 +81,24 @@ Map<String, dynamic> gamificationDataReceive = {
           "image": "https://source.unsplash.com/random/200x200?sig=4",
           "userId": "Manav Garg"
         },
-        {
-          "name": "KLM",
-          "points": 741,
-          "image": "image.com",
-          "userId": "ABC12"
-        },
+        {"name": "KLM", "points": 741, "image": "image.com", "userId": "ABC12"},
         {
           "name": "LMN",
           "points": 735,
           "image": "https://picsum.photos/250?image=9",
           "userId": "LMN12"
         },
-        {
-          "name": "MNO",
-          "points": 725,
-          "image": "image.com",
-          "userId": "MNO12"
-        },
-        {
-          "name": "NOP",
-          "points": 715,
-          "image": "image.com",
-          "userId": "NOP12"
-        },
-        {
-          "name": "OPQ",
-          "points": 615,
-          "image": "image.com",
-          "userId": "OPQ12"
-        },
-        {
-          "name": "PQR",
-          "points": 605,
-          "image": "image.com",
-          "userId": "PQR12"
-        },
+        {"name": "MNO", "points": 725, "image": "image.com", "userId": "MNO12"},
+        {"name": "NOP", "points": 715, "image": "image.com", "userId": "NOP12"},
+        {"name": "OPQ", "points": 615, "image": "image.com", "userId": "OPQ12"},
+        {"name": "PQR", "points": 605, "image": "image.com", "userId": "PQR12"},
         {
           "name": "Amit Gayar",
           "points": 535,
           "image": "https://source.unsplash.com/random/200x200?sig=2",
           "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
         },
-        {
-          "name": "QRS",
-          "points": 515,
-          "image": "image.com",
-          "userId": "QRS12"
-        },
-
+        {"name": "QRS", "points": 515, "image": "image.com", "userId": "QRS12"},
       ],
       "points": 800
     }
@@ -147,10 +114,7 @@ Map<String, dynamic> gamificationDataJsonDummy = {
   ]
 };
 Map<String, dynamic> gamificationDataDemo = {
-  "gameMap" : {
-    "hint": 3,
-    "life": 3
-  },
+  "gameMap": {"hint": 3, "life": 3},
   "eventType": "login",
   "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2",
   "eventData": {
@@ -176,10 +140,7 @@ Map<String, dynamic> gamificationDataDemo = {
       "title": "Level 1 completed",
       "subtitle": "Awarded 40 gems. You stand second",
       "image": "gif1.com",
-      "table": {
-        "points": 45,
-        "gems": 12
-      }
+      "table": {"points": 45, "gems": 12}
     },
     {
       "type": "normal",
@@ -216,30 +177,15 @@ Map<String, dynamic> gamificationDataDemo = {
           "image": "https://source.unsplash.com/random/200x200?sig=2",
           "userId": "Amit Gayar"
         },
-        {
-          "name": "KLM",
-          "points": 741,
-          "image": "image.com",
-          "userId": "ABC12"
-        },
+        {"name": "KLM", "points": 741, "image": "image.com", "userId": "ABC12"},
         {
           "name": "LMN",
           "points": 735,
           "image": "https://picsum.photos/250?image=9",
           "userId": "LMN12"
         },
-        {
-          "name": "MNO",
-          "points": 725,
-          "image": "image.com",
-          "userId": "MNO12"
-        },
-        {
-          "name": "NOP",
-          "points": 715,
-          "image": "image.com",
-          "userId": "NOP12"
-        }
+        {"name": "MNO", "points": 725, "image": "image.com", "userId": "MNO12"},
+        {"name": "NOP", "points": 715, "image": "image.com", "userId": "NOP12"}
       ],
       "points": 1400
     }
@@ -247,6 +193,7 @@ Map<String, dynamic> gamificationDataDemo = {
 };
 
 Map<String, dynamic> gamificationLoginDataReceive = {
+  "responseCode": 200,
   "board": [
     {
       "type": "normal",
@@ -267,6 +214,7 @@ Map<String, dynamic> gamificationShareDataReceive = {
   ]
 };
 Map<String, dynamic> gamificationCampaignDataReceive = {
+  "responseCode": 200,
   "board": [
     {
       "type": "normal",
@@ -278,52 +226,40 @@ Map<String, dynamic> gamificationCampaignDataReceive = {
 };
 
 Map<String, dynamic> campaignJson = {
-  "campaign" : [
+  "campaign": [
     {
       "id": 0,
       "name": "Daily Challenge",
-      "desc": "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
+      "desc":
+          "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
         "hint": 4,
         "life": 1,
-        "level": 0
         // "level": 0,1,2,3  (int value [0,1,2,3])
-
       }
     },
     {
       "id": 1,
       "name": "Practice",
-      "desc": "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
+      "desc":
+          "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=2",
-      "gameMap": {
-        "hint": 10000,
-        "life": 10000,
-        "level": 0
-      }
+      "gameMap": {"hint": 10000, "life": 10000, "level": 0}
     },
     {
       "id": 2,
       "name": "Unlimited",
       "desc": "Unlimited for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=3",
-      "gameMap": {
-        "hint": 14,
-        "life": 14,
-        "level": 2
-      }
+      "gameMap": {"hint": 14, "life": 14, "level": 2}
     },
     {
       "id": 3,
       "name": "Weekly Challenge",
       "desc": "Weekly challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=4",
-      "gameMap": {
-        "hint": 4,
-        "life": 4,
-        "level": 3
-      }
+      "gameMap": {"hint": 4, "life": 4, "level": 3}
     },
     {
       "id": 4,
@@ -336,64 +272,48 @@ Map<String, dynamic> campaignJson = {
   ]
 };
 Map<String, dynamic> campaignJsonDummy = {
-  "campaign" : [
+  "campaign": [
     {
       "id": 0,
       "name": "Daily Challenge",
-      "desc": "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
+      "desc":
+          "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
         "hint": 4,
         "life": 4,
         "level": 0
         // "level": 0,1,2,3  (int value [0,1,2,3])
-
       }
     },
     {
       "id": 1,
       "name": "Practice",
-      "desc": "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
+      "desc":
+          "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=2",
-      "gameMap": {
-        "hint": 10000,
-        "life": 10000,
-        "level": 0
-      }
+      "gameMap": {"hint": 10000, "life": 10000, "level": 0}
     },
     {
       "id": 2,
       "name": "Unlimited",
       "desc": "Unlimited for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=3",
-      "gameMap": {
-        "hint": 14,
-        "life": 14,
-        "level": 2
-      }
+      "gameMap": {"hint": 14, "life": 14, "level": 2}
     },
     {
       "id": 3,
       "name": "Weekly Challenge",
       "desc": "Weekly challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=4",
-      "gameMap": {
-        "hint": 4,
-        "life": 4,
-        "level": 3
-      }
+      "gameMap": {"hint": 4, "life": 4, "level": 3}
     },
     {
       "id": 4,
       "name": "Monthly Challenge",
       "desc": "daily challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=5",
-      "gameMap": {
-        "hint": 4,
-        "life": 4,
-        "level": 1
-
-      }
+      "gameMap": {"hint": 4, "life": 4, "level": 1}
     }
   ]
 };
@@ -401,15 +321,17 @@ Map<String, dynamic> campaignJsonDummy = {
 class GamificationApiProvider {
   final successCode = 200;
 
-  Future<GamificationDataMeta> getGameData(String? userId, String baseUrl, {testApi=false}) async {
+  Future<GamificationDataMeta> getGameData(String? userId, String baseUrl,
+      {testApi = false}) async {
     if (testApi) return GamificationDataMeta.fromJson(gamificationDataInit);
     var _url = baseUrl + "/gameData/$userId";
-    logPrint.d("fetching GameData from URL- $_url");
+    logPrint.d("fetching GameInitData from URL- $_url");
     http.Response _response;
     try {
-      _response = await http.get(Uri.parse(_url))
-          .timeout(const Duration(seconds: 10));
-      return GamificationDataMeta.fromJson({"gameMap" : parseResponse(_response)});
+      _response =
+          await http.get(Uri.parse(_url)).timeout(const Duration(seconds: 10));
+      return GamificationDataMeta.fromJson(
+          {"gameMap": parseResponse(_response)});
     } on TimeoutException catch (e) {
       logPrint.w('Timeout in fetching GameData : $e');
       return GamificationDataMeta.fromJson({});
@@ -419,32 +341,34 @@ class GamificationApiProvider {
     }
   }
 
-  Future<GamificationDataMeta> postGameEvent(
-      Map postData, String baseUrl, {testApi=false}) async {
+  Future<GamificationDataMeta> postGameEvent(Map postData, String baseUrl,
+      {testApi = false}) async {
     if (testApi) {
-      if (postData['eventType'] == "login"){
-        logPrint.d('testApi : login event  - $gamificationLoginDataReceive');
-        return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
-      }
-      if (postData['eventType'] == "gameFinish"){
-        logPrint.d('testApi : gameFinish event  - $gamificationDataReceive');
-        return GamificationDataMeta.fromJson(gamificationDataReceive);
-      }
-      if (postData['eventType'] == "share"){
-        logPrint.d('testApi : gameShared event  - $gamificationShareDataReceive');
-        return GamificationDataMeta.fromJson(gamificationShareDataReceive);
-      }
-      if (postData['eventType'] == "campaignAd"){
-        logPrint.d('testApi : campaignAd event  - $gamificationCampaignDataReceive');
-        return GamificationDataMeta.fromJson(gamificationCampaignDataReceive);
-      }
-      else{
-        logPrint.d('testApi : unknown? event -gamificationDataReceive returned');
-        return GamificationDataMeta.fromJson({});
+      switch (postData['eventType']) {
+        case "login":
+          logPrint.d('testApi : login event  - $gamificationLoginDataReceive');
+          return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
+        case "gameFinish":
+          logPrint.d('testApi : gameFinish event  - $gamificationDataReceive');
+          return GamificationDataMeta.fromJson(gamificationDataReceive);
+        case "share":
+          logPrint
+              .d('testApi : gameShared event  - $gamificationShareDataReceive');
+          return GamificationDataMeta.fromJson(gamificationShareDataReceive);
+        case "campaignAd":
+          logPrint.d(
+              'testApi : campaignAd event  - $gamificationCampaignDataReceive');
+          return GamificationDataMeta.fromJson(gamificationCampaignDataReceive);
+        default:
+          logPrint
+              .w('testApi : unknown? event -gamificationDataReceive returned');
+          return GamificationDataMeta.fromJson({});
       }
     }
 
-    dynamic _url = baseUrl + "/gameData/event?type=" + postData["eventType"];
+    // todo:  post url type?
+    // dynamic _url = baseUrl + "/gameData/event?type=" + postData["eventType"];
+    dynamic _url = baseUrl + "/gameData/event";
 
     logPrint.d("posting event with data- $postData and url : $_url");
 
@@ -458,8 +382,8 @@ class GamificationApiProvider {
     return GamificationDataMeta.fromJson(parseResponse(response));
   }
 
-
-  Future<CampaignListMeta> fetchCampaign(String? userId, String baseUrl, {testApi=false}) async {
+  Future<CampaignListMeta> fetchCampaign(String? userId, String baseUrl,
+      {testApi = false}) async {
     if (testApi) {
       return CampaignListMeta.fromJson(campaignJson);
     }
@@ -468,8 +392,8 @@ class GamificationApiProvider {
 
     http.Response _response;
     try {
-      _response = await http.get(Uri.parse(_url))
-          .timeout(const Duration(seconds: 10));
+      _response =
+          await http.get(Uri.parse(_url)).timeout(const Duration(seconds: 10));
       return CampaignListMeta.fromJson(parseResponse(_response));
     } on TimeoutException catch (e) {
       logPrint.w('Timeout in fetching campaign : $e');
@@ -488,8 +412,10 @@ class GamificationApiProvider {
       logPrint.d('responseString from API : $responseString');
       return responseString;
     } else {
-      throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');
+      // throw Exception('failed to fetch data with response.statusCode = ${response.statusCode}');
+      logPrint.w(
+          'failed to fetch data with response.statusCode = ${response.statusCode}');
+      return {"responseCode": response.statusCode};
     }
   }
-
 }

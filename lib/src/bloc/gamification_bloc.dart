@@ -9,14 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/util_functions.dart';
 
 part 'gamification_event.dart';
+
 part 'gamification_state.dart';
-
-
 
 class GamificationBloc extends Bloc<GameEvent, GameState> {
   GamificationBloc({GameRepository? gameRepository})
       : _gameRepository = gameRepository!,
-        super( const GameState.initial()) {
+        super(const GameState.initial()) {
     on<GameEvent>(_onEvent, transformer: sequential());
   }
 
@@ -34,73 +33,68 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     if (event is SelectCampaign) return _selectCampaignEvent(event, emit);
   }
 
-
-
   void _onGameLoading(
-      GameLoadingEvent event,
-      Emitter<GameState> emit,
-      ) async {
-    emit( const GameState.loadInProgress());
+    GameLoadingEvent event,
+    Emitter<GameState> emit,
+  ) async {
+    emit(const GameState.loadInProgress());
   }
 
   void _selectCampaignEvent(
-      SelectCampaign event,
-      Emitter<GameState> emit,
-      ){
-    var _data = state.copyWith();
-    emit( GameState.gameLoadedState(
-        gameData: _data.gameData,
-        campaignList: _data.campaignList,
-        campaignId: event.campaignId,
-        userData: _data.userData
+    SelectCampaign event,
+    Emitter<GameState> emit,
+  ) {
+    emit(state.copyWith(
+      campaignId: event.campaignId,
     ));
   }
 
   void _onGameLoad(
-      GameLoadedEvent event,
-      Emitter<GameState> emit,
-      ) async {
-    logPrint.d('GameLoadedEvent called');
+    GameLoadedEvent event,
+    Emitter<GameState> emit,
+  ) async {
+    logPrint.v('GameLoadedEvent called');
 
-    final GamificationDataMeta _myGame = await _gameRepository.getGameData(event.userId);
+    emit(const GameState.gameLoadedState(
+        isGameLoaded: false, isCampaignLoaded: false));
+    if ((event.userId).isNotEmpty) {
+      final GamificationDataMeta _myGame =
+          await _gameRepository.getGameData(event.userId);
+      final _campaignList =
+          await _gameRepository.fetchCampaignData(event.userId);
+      emit(GameState.gameLoadedState(
+          gameData: _myGame,
+          campaignList: _campaignList.campaign,
+          userData: GameUserData()));
+    } else {
+      logPrint.w("userId is empty i.e. Not allowed to send request");
 
-    final  _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-
-    emit(GameState.gameLoadedState(
-        gameData: _myGame,
-        campaignList: _campaignList.campaign,
-        userData: GameUserData()
-    )
-    );
+      /// updating with default values
+      GamificationDataMeta? _data =
+          GamificationDataMeta.fromJson({"hint": 0, "life": 1});
+      emit(GameState.gameLoadedState(
+          isGameLoaded: true, isCampaignLoaded: true, gameData: _data));
+    }
   }
 
   void _showBoardEvent(
-      ShowBoardEvent event,
-      Emitter<GameState> emit,
-      )async{
-    logPrint.d('next ShowBoardEvent called');
+    ShowBoardEvent event,
+    Emitter<GameState> emit,
+  ) async {
+    logPrint.v('next ShowBoardEvent called');
     var _data = state.copyWith();
-    emit(
-        GameState.gameLoadedState(
-          boardIndex: event.index,
-          gameData: _data.gameData,
-          board: getBoard(_data.gameData!, event.index),
-          campaignList: _data.campaignList,
-          userData: _data.userData,
+    emit(state.copyWith(
+      boardIndex: event.index,
+      board: getBoard(_data.gameData!, event.index),
     ));
   }
 
-
-
   void _gameFinishedEvent(
-      GameFinishedEvent event,
-      Emitter<GameState> emit,
-      )async{
-    logPrint.d("_gameFinishedEvent called with gameMap = ${event.gameMap}");
+    GameFinishedEvent event,
+    Emitter<GameState> emit,
+  ) async {
+    logPrint.v("_gameFinishedEvent called with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
-    var _userJson = _data.userData!.toJson();
-    _userJson.addAll({'uid':event.userId});
-    var _user = GameUserData.fromJson(_userJson);
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
     _eventData["campaignId"] = _data.campaignId;
@@ -110,18 +104,28 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "userId": event.userId,
       "eventData": _eventData,
     };
-    final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
-    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
-    var _board = getBoard(_myGame,0);
+    emit(state.copyWith(isGameLoaded: false, isCampaignLoaded: false));
 
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _board,
-        campaignList: _campaignList.campaign, userData: _user));
+    final GamificationDataMeta _myGame =
+        await _gameRepository.postGameData(_new);
+    emit(state.copyWith(
+      gameData: _myGame,
+      board: getBoard(_myGame, 0),
+    ));
+    var _gameInitData = await _gameRepository.getGameData(event.userId);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+
+    emit(state.copyWith(
+        gameData: _myGame.copyWith(gameMap: _gameInitData.gameMap),
+        campaignList: _campaignList.campaign,
+        isGameLoaded: true,
+        isCampaignLoaded: true));
   }
 
   void _campaignAdEvent(
-      CampaignADEvent event,
-      Emitter<GameState> emit,
-      )async{
+    CampaignADEvent event,
+    Emitter<GameState> emit,
+  ) async {
     logPrint.d("CampaignAdEvent called with adWatched map = ${event.data}");
     var _data = state.copyWith();
     Map _eventData = {};
@@ -132,72 +136,87 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "userId": event.userId,
       "eventData": _eventData,
     };
-    final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
+    final GamificationDataMeta _myGame =
+        await _gameRepository.postGameData(_new);
     final _campaignList = await _gameRepository.fetchCampaignData(event.userId);
     var _board = getBoard(_myGame, 0);
-    emit(GameState.gameLoadedState(gameData: _myGame, board: _board,
-        campaignList: _campaignList.campaign, userData: _data.userData));
+    emit(state.copyWith(
+        gameData: _myGame,
+        board: _board,
+        campaignList: _campaignList.campaign,
+        userData: _data.userData));
   }
 
   void _gameLoginEvent(
-      GameLoginEvent event,
-      Emitter<GameState> emit,
-      )async{
-    // todo : login cred storing
-    var _data = state.copyWith();
+    GameLoginEvent event,
+    Emitter<GameState> emit,
+  ) async {
+    logPrint.d("game login event  = ${event.loginCred}");
     Map _eventData = {};
-    _eventData["firstGame"] = await checkInitialPlay();
     _eventData["email"] = event.loginCred['email'];
     _eventData["name"] = event.loginCred['name'];
     _eventData["image"] = event.loginCred['image'];
-    Map _new = {
+    Map _postData = {
       "eventType": "login",
       "userId": event.loginCred['uid'],
       "eventData": _eventData,
     };
 
+    logPrint.d("game login event  isCampaignLoaded: false, isGameLoaded:false");
 
-    /// first login detection
-    GameUserData? _user;
-    GamificationDataMeta? _myGame;
-    if(_data.userData!.uid != ''){
-      _user = GameUserData.fromJson(event.loginCred);
-      _myGame = await _gameRepository.postGameData(_new);
-    }
-    else{
-      _user = _data.userData;
-      _myGame = _data.gameData;
-    }
+    /// loading state
+    emit(state.copyWith(
+        isGameLoaded: false,
+        isCampaignLoaded: false,
+        userData: GameUserData.fromJson(event.loginCred)));
 
-   /// fetch campaigns
-    var _campaignList = await _gameRepository.fetchCampaignData(_data.userData!.uid);
+    /// posting loginData
+    GamificationDataMeta? _loginRes =
+        await _gameRepository.postGameData(_postData);
 
-    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, 0),
-        campaignList: _campaignList.campaign, userData: _user));
+    logPrint.d("game login event  responseCode =  ${_loginRes.responseCode}");
+
+    logPrint.d(
+        'state.copyWith in login with board = ${getBoard(_loginRes, 0)?.toJson()}');
+
+    emit(state.copyWith(
+        gameData: _loginRes,
+        board: getBoard(_loginRes, 0),
+        isGameLoaded: false,
+        isCampaignLoaded: false));
+
+    GamificationDataMeta? _myInitGame =
+        await _gameRepository.getGameData(event.loginCred['uid']);
+    var _campaignList =
+        await _gameRepository.fetchCampaignData(event.loginCred['uid']);
+    emit(state.copyWith(
+        gameData: _myInitGame.copyWith(board: _loginRes.board),
+        campaignList: _campaignList.campaign,
+        isGameLoaded: _myInitGame.responseCode == 200,
+        isCampaignLoaded: _campaignList.responseCode == 200));
   }
 
   void _gameShareEvent(
-      GameSharedEvent event,
-      Emitter<GameState> emit,
-      )async{
+    GameSharedEvent event,
+    Emitter<GameState> emit,
+  ) async {
     var _data = state.copyWith();
     Map _eventData = {};
     Map _new = {
       "eventType": event.name,
       "userId": event.userId,
-      "eventData" : _eventData
+      "eventData": _eventData
     };
-    final GamificationDataMeta _myGame = await _gameRepository.postGameData(_new);
+    final GamificationDataMeta _myGame =
+        await _gameRepository.postGameData(_new);
     logPrint.d('Game-shared in bloc ${_myGame.board}');
-    emit(GameState.gameLoadedState(gameData: _myGame, board: getBoard(_myGame, 0),
-                             campaignList: _data.campaignList, campaignId: _data.campaignId, userData: _data.userData
-    ));
+    emit(GameState.gameLoadedState(
+        gameData: _myGame,
+        board: getBoard(_myGame, 0),
+        campaignList: _data.campaignList,
+        campaignId: _data.campaignId,
+        userData: _data.userData));
   }
-
-
-
-
-
 
   ///
   ///
@@ -213,42 +232,51 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
   Future<bool> checkInitialAppOpen() async {
     final SharedPreferences prefs = await _prefs;
-    final int initialDayOpen = (prefs.getInt('initialDayOpen') ?? DateTime.now().day-1) ;
-    if(initialDayOpen - DateTime.now().day != 0){
-      await prefs.setInt('initialDayOpen', DateTime.now().day).then((bool success) => true);
-      logPrint.d('First visit of the Day - sharedPref[initialDayOpen] = $initialDayOpen');
+    final int initialDayOpen =
+        (prefs.getInt('initialDayOpen') ?? DateTime.now().day - 1);
+    if (initialDayOpen - DateTime.now().day != 0) {
+      await prefs
+          .setInt('initialDayOpen', DateTime.now().day)
+          .then((bool success) => true);
+      logPrint.d(
+          'First visit of the Day - sharedPref[initialDayOpen] = $initialDayOpen');
       return true;
-    }
-    else {
-      logPrint.d('You have opened the App earlier today - sharedPref[initialDayOpen] = $initialDayOpen');
+    } else {
+      logPrint.d(
+          'You have opened the App earlier today - sharedPref[initialDayOpen] = $initialDayOpen');
       return false;
     }
   }
 
   Future<bool> checkInitialPlay() async {
     final SharedPreferences prefs = await _prefs;
-    final int initialPlay = (prefs.getInt('initialPlay') ?? DateTime.now().day-1) ;
-    if(initialPlay - DateTime.now().day != 0){
-      await prefs.setInt('initialPlay', DateTime.now().day).then((bool success) => true);
+    final int initialPlay =
+        (prefs.getInt('initialPlay') ?? DateTime.now().day - 1);
+    if (initialPlay - DateTime.now().day != 0) {
+      await prefs
+          .setInt('initialPlay', DateTime.now().day)
+          .then((bool success) => true);
       logPrint.d('Initial game of the day');
       return true;
-    }
-    else {
+    } else {
       logPrint.d('This is not your first game');
       return false;
     }
   }
 
-  getBoard(myGame, index){
-    var _boards = myGame.board??[];
-    Board? _processedBoard;
-    if(_boards.isNotEmpty && index < _boards.length){
-        _processedBoard =  _boards[index];
+  getBoard(myGame, index) {
+    logPrint.v("getting board");
+    var _boards = myGame.board ?? [];
+    Board? _processedBoard = Board.fromJson({});
+    if (_boards.isNotEmpty && index < _boards.length) {
+      logPrint.v("board exists");
+      _processedBoard = _boards[index];
+    } else {
+      logPrint.v("No board found");
     }
     return _processedBoard;
   }
 
 // todo : checkInitialAppOpen and checkInitialPlay -- where to put in POST gameData API
-
 
 }
