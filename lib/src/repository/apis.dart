@@ -11,6 +11,10 @@ Map<String, dynamic> gamificationDataInit = {
   "responseCode": 200,
   "gameMap": {"hint": 7, "life": 2, "pencil": 0}
 };
+Map<String, dynamic> gameDataRestartInit = {
+  "responseCode": 200,
+  "gameMap": {"hint": 179, "life": 189, "pencil": 1}
+};
 
 Map<String, dynamic> gamificationDataSend = {
   // "eventType": "firstOpen",// todo : ask?
@@ -101,6 +105,16 @@ Map<String, dynamic> gamificationDataReceive = {
         {"name": "QRS", "points": 515, "image": "image.com", "userId": "QRS12"},
       ],
       "points": 800
+    }
+  ]
+};
+Map<String, dynamic> gameRestartReceive = {
+  "board": [
+    {
+      "type": "normal",
+      "title": "Game Restarted",
+      "image": "gif1.com",
+      "share": "normal share message"
     }
   ]
 };
@@ -245,7 +259,7 @@ Map<String, dynamic> campaignJson = {
       "desc":
           "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=2",
-      "gameMap": {"hint": 10000, "life": 10000, "level": 0}
+      "gameMap": {"hint": 100, "life": 100, "level": 0, "pencil":1}
     },
     {
       "id": 2,
@@ -322,8 +336,13 @@ class GamificationApiProvider {
   final successCode = 200;
 
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl,
-      {testApi = false}) async {
-    if (testApi) return GamificationDataMeta.fromJson(gamificationDataInit);
+      {testApi = false, testEvent = ''}) async {
+    if (testApi) {
+      if(testEvent == 'restart'){
+        return GamificationDataMeta.fromJson(gameDataRestartInit);
+      }
+      return GamificationDataMeta.fromJson(gamificationDataInit);
+    }
     var _url = baseUrl + "/gameData/$userId";
     logPrint.d("fetching GameInitData from URL- $_url");
     http.Response _response;
@@ -349,6 +368,10 @@ class GamificationApiProvider {
           logPrint.d('testApi : login event  - $gamificationLoginDataReceive');
           return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
         case "gameFinish":
+          if(postData['eventData']['gameMap']['result']=='restart') {
+            logPrint.d('testApi : gameFinish event  - $gameRestartReceive');
+            return GamificationDataMeta.fromJson(gameRestartReceive);
+          }
           logPrint.d('testApi : gameFinish event  - $gamificationDataReceive');
           return GamificationDataMeta.fromJson(gamificationDataReceive);
         case "share":

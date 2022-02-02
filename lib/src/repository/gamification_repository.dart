@@ -11,8 +11,8 @@ class GameRepository {
 
   final GamificationApiProvider _gameApiProvider = GamificationApiProvider();
 
-  Future<GamificationDataMeta> getGameData(String? userId) => _gameApiProvider
-      .getGameData(userId, dataConst.baseUrl, testApi: dataConst.testApi);
+  Future<GamificationDataMeta> getGameData(String? userId, {testEvent = ''}) => _gameApiProvider
+      .getGameData(userId, dataConst.baseUrl, testApi: dataConst.testApi, testEvent : testEvent);
 
   Future<GamificationDataMeta> postGameData(Map postData) => _gameApiProvider
       .postGameEvent(postData, dataConst.baseUrl, testApi: dataConst.testApi);
