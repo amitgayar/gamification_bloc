@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../gamification_bloc.dart';
 import '../widgets/normal_board.dart';
 import '../widgets/ranking_board.dart';
 import 'package:provider/provider.dart';
@@ -13,41 +14,36 @@ class ShowBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _board = context.select((GamificationBloc bloc) => bloc.state.board);
+    Board? _board = context.select((GamificationBloc bloc) => bloc.state.board);
     var _index =
         context.select((GamificationBloc bloc) => bloc.state.boardIndex);
-    if (_board == null) {
+    if (_board == null || _board.type == null) {
       return Container();
     }
-    if (_board.type == null) {
-      return Container();
-    } else {
+    else {
       return WillPopScope(
           child: Scaffold(
             body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ///Share Button
-                _board.share != null
-                    ? TextButton(
+                if(_board.share != null)
+                    TextButton(
                         onPressed: () async {
                           logPrint.d('app shared clicked in UI');
                           await Share.share(_board.share ?? '');
                         },
                         child: const Icon(
                           CupertinoIcons.arrowshape_turn_up_right,
-                        ))
-                    : Container(),
+                        )),
 
                 ///  Boards
-                _board.type == 'normal'
-                    ? NormalBoardContent(
+                if(_board.type == 'normal')
+                     NormalBoardContent(
                         board: _board,
-                      )
-                    : Container(),
-                _board.type != 'normal'
-                    ? RankingBoardPage(board: _board, userId: userId)
-                    : Container(),
+                      ),
+                if(_board.type != 'normal')
+                     RankingBoardPage(board: _board, userId: userId),
 
                 /// Continue Button
                 Container(
