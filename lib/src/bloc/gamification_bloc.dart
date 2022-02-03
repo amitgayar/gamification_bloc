@@ -119,6 +119,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     var _data = state.copyWith();
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
+    DateTime _now = DateTime.now();
+    _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now});
     _eventData["campaignId"] = _data.campaignId;
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
@@ -128,7 +130,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     emit(state.copyWith(isGameLoaded: false, isCampaignLoaded: false));
 
-    logPrint.v("_gameFinishedEvent posted with gameMap = $_new");
+    logPrint.v("POST >>> gameFinished >>   with gameMap = $_new");
 
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
