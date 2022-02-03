@@ -34,7 +34,7 @@ class NormalBoardContent extends StatelessWidget {
             ],
           ),
           Image.network(
-            board.image!,
+            board.image??"image.com",
             errorBuilder: (context, error, stackTrace) {
               return const Icon(
                 CupertinoIcons.flame,

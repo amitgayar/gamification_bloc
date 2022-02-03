@@ -37,7 +37,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoadingEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
+    logPrint.v("game bloc event ");
 
     emit(const GameState.loadInProgress());
   }
@@ -46,9 +46,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     SelectCampaign event,
     Emitter<GameState> emit,
   ) {
-    logPrint.e("game bloc event ");
+    logPrint.v("game bloc event campaignId = ${event.campaignId}");
 
-    logPrint.w("SelectCampaignEvent campaignId = ${event.campaignId}");
     emit(state.copyWith(
       campaignId: event.campaignId,
     ));
@@ -58,8 +57,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoadedEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
-
     logPrint.v('GameLoadedEvent called');
 
     emit(const GameState.gameLoadedState(
@@ -105,9 +102,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     ShowBoardEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
-
-    logPrint.v('next ShowBoardEvent called');
+    logPrint.v("game bloc event ");
     var _data = state.copyWith();
     emit(state.copyWith(
       boardIndex: event.index,
@@ -119,9 +114,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameFinishedEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
+    logPrint.v("game bloc event with gameMap = ${event.gameMap}");
 
-    logPrint.v("_gameFinishedEvent called with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
@@ -133,6 +127,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       "eventData": _eventData,
     };
     emit(state.copyWith(isGameLoaded: false, isCampaignLoaded: false));
+
+    logPrint.v("_gameFinishedEvent posted with gameMap = $_new");
 
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
@@ -154,9 +150,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     CampaignADEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
+    logPrint.v("game bloc event with adWatched map = ${event.data}");
 
-    logPrint.d("CampaignAdEvent called with adWatched map = ${event.data}");
     var _data = state.copyWith();
     Map _eventData = {};
     _eventData["adWatched"] = event.data['adWatched'];
@@ -181,7 +176,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoginEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
 
     logPrint.d("game login event  = ${event.loginCred}");
     Map _eventData = {};
@@ -232,7 +226,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameSharedEvent event,
     Emitter<GameState> emit,
   ) async {
-    logPrint.e("game bloc event ");
+    logPrint.v("game bloc event ");
 
     var _data = state.copyWith();
     Map _eventData = {};

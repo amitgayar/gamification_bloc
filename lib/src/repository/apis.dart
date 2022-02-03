@@ -7,6 +7,106 @@ import "package:http/http.dart" as http;
 import "../models/gamification_data.dart";
 import "dart:convert";
 
+Map<String, dynamic> gameResult = {
+  "eventType": "gameFinish",
+  "userId": "dWCkqd8GGYbmzyxc6nETI6U7sbs1",
+  "eventData": {
+    "firstGame": false,
+    "gameMap": {
+      "level": 1,
+      "campaignId": 1,
+      "datetime": "2021-12-11 07:54:16.084",
+      "timezone": "UTC",
+      "result": "success",
+      "time": 600,
+      "hint": 3,
+      "life": 3,
+      "puzzle": [
+        -1,
+        -1,
+        -1,
+        -1,
+        4,
+        5,
+        -1,
+        -1,
+        9,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        8,
+        -1,
+        2,
+        3,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        1,
+        -1,
+        3,
+        -1,
+        -1,
+        -1,
+        9,
+        -1,
+        -1,
+        7,
+        8,
+        -1,
+        -1,
+        -1,
+        -1,
+        4,
+        6,
+        -1,
+        9,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        2,
+        -1,
+        6,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        6,
+        -1,
+        7,
+        -1,
+        9,
+        -1,
+        7,
+        5,
+        -1,
+        1,
+        -1,
+        -1,
+        -1
+      ]
+    }
+  }
+};
 Map<String, dynamic> gamificationDataInit = {
   "responseCode": 200,
   "gameMap": {"hint": 7, "life": 3}
@@ -28,7 +128,6 @@ Map<String, dynamic> gamificationDataSend = {
     "email": "tim@gmail.com",
     "name": "Tim",
     "image": "image.com",
-    "firstGame": true,
     "gameMap": {
       "level": 1,
       "dateTime": "2021-12-11 07:54:16.084",
@@ -250,7 +349,6 @@ Map<String, dynamic> campaignJson = {
       "gameMap": {
         "hint": 4,
         "life": 1,
-        // "level": 0,1,2,3  (int value [0,1,2,3])
       }
     },
     {
@@ -259,7 +357,7 @@ Map<String, dynamic> campaignJson = {
       "desc":
           "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=2",
-      "gameMap": {"hint": 100, "life": 100, "level": 0, "pencil":1}
+      "gameMap": {"hint": 100, "life": 100, "level": 0, "pencil": 1}
     },
     {
       "id": 2,
@@ -273,7 +371,7 @@ Map<String, dynamic> campaignJson = {
       "name": "Weekly Challenge",
       "desc": "Weekly challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=4",
-      "gameMap": {"hint": 81, "life": 2, "level": 3, "pencil": 0}
+      "gameMap": {"hint": 81, "level": 3, "pencil": 0}
     },
     {
       "id": 4,
@@ -338,7 +436,7 @@ class GamificationApiProvider {
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl,
       {testApi = false, testEvent = ''}) async {
     if (testApi) {
-      if(testEvent == 'restart'){
+      if (testEvent == 'restart') {
         return GamificationDataMeta.fromJson(gameDataRestartInit);
       }
       return GamificationDataMeta.fromJson(gamificationDataInit);
@@ -368,7 +466,7 @@ class GamificationApiProvider {
           logPrint.d('testApi : login event  - $gamificationLoginDataReceive');
           return GamificationDataMeta.fromJson(gamificationLoginDataReceive);
         case "gameFinish":
-          if(postData['eventData']['gameMap']['result']=='restart') {
+          if (postData['eventData']['gameMap']['result'] == 'restart') {
             logPrint.d('testApi : gameFinish event  - $gameRestartReceive');
             return GamificationDataMeta.fromJson(gameRestartReceive);
           }
