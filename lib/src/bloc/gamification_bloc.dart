@@ -37,6 +37,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoadingEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     emit(const GameState.loadInProgress());
   }
 
@@ -44,6 +46,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     SelectCampaign event,
     Emitter<GameState> emit,
   ) {
+    logPrint.e("game bloc event ");
+
+    logPrint.w("SelectCampaignEvent campaignId = ${event.campaignId}");
     emit(state.copyWith(
       campaignId: event.campaignId,
     ));
@@ -53,25 +58,45 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoadedEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     logPrint.v('GameLoadedEvent called');
 
     emit(const GameState.gameLoadedState(
         isGameLoaded: false, isCampaignLoaded: false));
     if ((event.userId).isNotEmpty) {
-      final GamificationDataMeta _myGame =
-          await _gameRepository.getGameData(event.userId);
-      final _campaignList =
-          await _gameRepository.fetchCampaignData(event.userId);
-      emit(GameState.gameLoadedState(
+      GamificationDataMeta _myGame = GamificationDataMeta.fromJson({});
+      var _appOpen = await checkInitialAppOpen();
+      if(_appOpen){
+        Map _new = {
+          "eventType": _appOpen,
+          "userId": event.userId,
+        };
+
+        _myGame =
+        await _gameRepository.postGameData(_new);
+        emit(state.copyWith(
           gameData: _myGame,
+          board: getBoard(_myGame, 0),
+          boardIndex: 0,
+        ));
+      }
+
+      var _gameInitData = await _gameRepository.getGameData(event.userId);
+      var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+
+      emit(state.copyWith(
+          gameData: _myGame.copyWith(gameMap: _gameInitData.gameMap),
           campaignList: _campaignList.campaign,
-          userData: GameUserData()));
+          isGameLoaded: true,
+          isCampaignLoaded: true));
+
     } else {
       logPrint.w("userId is empty i.e. Not allowed to send request");
 
       /// updating with default values
       GamificationDataMeta? _data = GamificationDataMeta.fromJson({});
-      emit(GameState.gameLoadedState(
+      emit(state.copyWith(
           isGameLoaded: true, isCampaignLoaded: true, gameData: _data));
     }
   }
@@ -80,6 +105,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     ShowBoardEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     logPrint.v('next ShowBoardEvent called');
     var _data = state.copyWith();
     emit(state.copyWith(
@@ -92,6 +119,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameFinishedEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     logPrint.v("_gameFinishedEvent called with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
     Map _eventData = {};
@@ -125,6 +154,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     CampaignADEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     logPrint.d("CampaignAdEvent called with adWatched map = ${event.data}");
     var _data = state.copyWith();
     Map _eventData = {};
@@ -150,6 +181,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameLoginEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     logPrint.d("game login event  = ${event.loginCred}");
     Map _eventData = {};
     _eventData["email"] = event.loginCred['email'];
@@ -199,6 +232,8 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     GameSharedEvent event,
     Emitter<GameState> emit,
   ) async {
+    logPrint.e("game bloc event ");
+
     var _data = state.copyWith();
     Map _eventData = {};
     Map _new = {
@@ -209,9 +244,9 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
     logPrint.d('Game-shared in bloc ${_myGame.board}');
-    GamificationDataMeta? _myInitGame =
-        await _gameRepository.getGameData(event.userId);
-    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+    // GamificationDataMeta? _myInitGame =
+    //     await _gameRepository.getGameData(event.userId);
+    // var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
     emit(GameState.gameLoadedState(
         gameData: _myGame,

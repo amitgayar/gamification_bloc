@@ -9,11 +9,11 @@ import "dart:convert";
 
 Map<String, dynamic> gamificationDataInit = {
   "responseCode": 200,
-  "gameMap": {"hint": 7, "life": 2, "pencil": 0}
+  "gameMap": {"hint": 7, "life": 3}
 };
 Map<String, dynamic> gameDataRestartInit = {
   "responseCode": 200,
-  "gameMap": {"hint": 179, "life": 189, "pencil": 1}
+  "gameMap": {"hint": 179, "life": 189}
 };
 
 Map<String, dynamic> gamificationDataSend = {
@@ -49,22 +49,22 @@ Map<String, dynamic> gamificationDataReceive = {
       // "type": "leaderBoardUpdate",
       // "type": "normal",
       "type": "normal",
-      "title": "Level 1 completed",
-      "subtitle": "Awarded 40 gems. You stand second",
+      "name": "Level 1 completed",
+      "desc": "Awarded 40 gems. You stand second",
       "image": "gif1.com",
       "share": "normal share message",
       "table": {"points": 45, "gems": 12}
     },
     {
       "type": "normal",
-      "title": "Level 2 completed",
-      "subtitle": "Awarded 140 gems. You stand second",
+      "name": "Level 2 completed",
+      "desc": "Awarded 140 gems. You stand second",
       "image": "gif1.com",
       "table": {"points": 45, "gems": 12, "ingots": 12, "boost": "combo"}
     },
     {
       "type": "leaderBoardUpdate",
-      "title": "Title 2",
+      "name": "Title 2",
       "share": "leader share message",
       "player": [
         {
@@ -97,7 +97,7 @@ Map<String, dynamic> gamificationDataReceive = {
         {"name": "OPQ", "points": 615, "image": "image.com", "userId": "OPQ12"},
         {"name": "PQR", "points": 605, "image": "image.com", "userId": "PQR12"},
         {
-          "name": "Amit Gayar",
+          "name": "Amit",
           "points": 535,
           "image": "https://source.unsplash.com/random/200x200?sig=2",
           "userId": "CUo8yIA6HDTvzfwUrQAQVhGoXtp2"
@@ -112,7 +112,7 @@ Map<String, dynamic> gameRestartReceive = {
   "board": [
     {
       "type": "normal",
-      "title": "Game Restarted",
+      "name": "Game Restarted",
       "image": "gif1.com",
       "share": "normal share message"
     }
@@ -122,7 +122,7 @@ Map<String, dynamic> gamificationDataJsonDummy = {
   "board": [
     {
       "type": "normal",
-      "title": "Error!!",
+      "name": "Error!!",
       "image": "gif1.com",
     },
   ]
@@ -151,21 +151,21 @@ Map<String, dynamic> gamificationDataDemo = {
   "board": [
     {
       "type": "normal",
-      "title": "Level 1 completed",
-      "subtitle": "Awarded 40 gems. You stand second",
+      "name": "Level 1 completed",
+      "desc": "Awarded 40 gems. You stand second",
       "image": "gif1.com",
       "table": {"points": 45, "gems": 12}
     },
     {
       "type": "normal",
-      "title": "Level 2 completed",
-      "subtitle": "Awarded 140 gems. You stand second",
+      "name": "Level 2 completed",
+      "desc": "Awarded 140 gems. You stand second",
       "image": "gif1.com",
       "table": {"points": 45, "gems": 12, "ingots": 12, "boost": "combo"}
     },
     {
       "type": "leaderBoardUpdate",
-      "title": "Title 2",
+      "name": "Title 2",
       "player": [
         {
           "name": "ABC",
@@ -186,10 +186,10 @@ Map<String, dynamic> gamificationDataDemo = {
           "userId": "Manav Garg"
         },
         {
-          "name": "Amit Gayar",
+          "name": "Amit",
           "points": 743,
           "image": "https://source.unsplash.com/random/200x200?sig=2",
-          "userId": "Amit Gayar"
+          "userId": "Amit"
         },
         {"name": "KLM", "points": 741, "image": "image.com", "userId": "ABC12"},
         {
@@ -211,8 +211,8 @@ Map<String, dynamic> gamificationLoginDataReceive = {
   "board": [
     {
       "type": "normal",
-      "title": "Login Completed",
-      "subtitle": "Awarded 20 gems",
+      "name": "Login Completed",
+      "desc": "Awarded 20 gems",
       "image": "gif1.com",
     }
   ]
@@ -221,8 +221,8 @@ Map<String, dynamic> gamificationShareDataReceive = {
   "board": [
     {
       "type": "normal",
-      "title": "App shared",
-      "subtitle": "Awarded 120 gems",
+      "name": "App shared",
+      "desc": "Awarded 120 gems",
       "image": "gif1.com",
     }
   ]
@@ -232,8 +232,8 @@ Map<String, dynamic> gamificationCampaignDataReceive = {
   "board": [
     {
       "type": "normal",
-      "title": "ad campaign success",
-      "subtitle": "Awarded 120 gems",
+      "name": "ad campaign success",
+      "desc": "Awarded 120 gems",
       "image": "gif1.com",
     }
   ]
@@ -273,7 +273,7 @@ Map<String, dynamic> campaignJson = {
       "name": "Weekly Challenge",
       "desc": "Weekly challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=4",
-      "gameMap": {"hint": 4, "life": 4, "level": 3}
+      "gameMap": {"hint": 81, "life": 2, "level": 3, "pencil": 0}
     },
     {
       "id": 4,

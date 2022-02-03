@@ -113,8 +113,8 @@ class Board {
 
   Board.fromJson(Map<String, dynamic> json) {
     type = json['type'] as String?;
-    title = json['title'] ?? '';
-    subtitle = json['subtitle'] ?? '';
+    title = json['name'] ?? '';
+    subtitle = json['desc'] ?? '';
     image = json['image'] ?? '';
     share = json['share'] as String?;
     table = json['table'] as Map<String, dynamic>?;
@@ -137,8 +137,8 @@ class Board {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = <String, dynamic>{};
     json['type'] = type;
-    json['title'] = title;
-    json['subtitle'] = subtitle;
+    json['name'] = title;
+    json['desc'] = subtitle;
     json['image'] = image;
     json['share'] = share;
     json['table'] = table;
