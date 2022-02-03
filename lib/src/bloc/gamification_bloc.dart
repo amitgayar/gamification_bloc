@@ -120,7 +120,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     Map _eventData = {};
     _eventData["gameMap"] = event.gameMap;
     DateTime _now = DateTime.now();
-    _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now});
+    _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now.toString()});
     _eventData["campaignId"] = _data.campaignId;
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {

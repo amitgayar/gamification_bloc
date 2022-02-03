@@ -109,7 +109,7 @@ Map<String, dynamic> gameResult = {
 };
 Map<String, dynamic> gamificationDataInit = {
   "responseCode": 200,
-  "gameMap": {"hint": 7, "life": 3}
+  "gameMap": {"hint": 1, "life": 1}
 };
 Map<String, dynamic> gameDataRestartInit = {
   "responseCode": 200,
@@ -347,8 +347,8 @@ Map<String, dynamic> campaignJson = {
           "daily challenge for progressing daily challenge for progressing daily challenge for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
-        "hint": 4,
-        "life": 1,
+        "hint": 2,
+        "life": 2,
       }
     },
     {
@@ -357,21 +357,21 @@ Map<String, dynamic> campaignJson = {
       "desc":
           "Practice for progressing Practice for progressing Practice for progressing Practice for progressing ",
       "image": "https://source.unsplash.com/random/200x200?sig=2",
-      "gameMap": {"hint": 100, "life": 100, "level": 0, "pencil": 1}
+      "gameMap": {"hint": 3, "life": 3, "level": 0}
     },
     {
       "id": 2,
       "name": "Unlimited",
       "desc": "Unlimited for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=3",
-      "gameMap": {"hint": 14, "life": 14, "level": 2}
+      "gameMap": {"hint": 4, "life": 4, "level": 2, "pencil": 0}
     },
     {
       "id": 3,
       "name": "Weekly Challenge",
       "desc": "Weekly challenge for progressing",
       "image": "https://source.unsplash.com/random/200x200?sig=4",
-      "gameMap": {"hint": 81, "level": 3, "pencil": 0}
+      "gameMap": {"hint": 5, "level": 5, "pencil": 0}
     },
     {
       "id": 4,
@@ -488,8 +488,8 @@ class GamificationApiProvider {
     }
 
     // todo:  post url type?
-    // dynamic _url = baseUrl + "/gameData/event?type=" + postData["eventType"];
-    dynamic _url = baseUrl + "/gameData/event";
+    dynamic _url = baseUrl + "/gameData/event?type=" + postData["eventType"];
+    // dynamic _url = baseUrl + "/gameData/event";
 
     logPrint.d("posting event with data- $postData and url : $_url");
 
