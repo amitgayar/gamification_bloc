@@ -36,7 +36,7 @@ class GameState extends Equatable {
 
   GameState copyWith({
     GamificationDataMeta? gameData,
-    int? boardIndex,
+    int? boardIndex = 0,
     Board? board,
     List<Campaign>? campaignList,
     int? campaignId,
@@ -46,7 +46,7 @@ class GameState extends Equatable {
   }) {
     return GameState._(
         gameData: gameData ?? this.gameData,
-        boardIndex: boardIndex ?? this.boardIndex,
+        boardIndex: boardIndex,
         board: board ?? this.board,
         campaignList: campaignList ?? this.campaignList,
         campaignId: campaignId ?? this.campaignId,

@@ -9,71 +9,65 @@ class NormalBoardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            children: [
-              Text(
-                board.title ?? '',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(fontWeight: FontWeight.w900),
-              ),
-              Text(
-                board.subtitle ?? '',
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-          Image.network(
-            board.image??"image.com",
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(
-                CupertinoIcons.flame,
-                size: 70,
-                color: Colors.green,
-              );
-            },
-          ),
-          board.table != null
-              ? Column(
-                  children: board.table!.entries
-                      .map((entry) => Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 48),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  entry.key.toString().toCapitalized(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  entry.value.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(fontWeight: FontWeight.w700),
-                                  // .copyWith(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ))
-                      .toList())
-              : Container(),
-        ],
-      ),
+    TextTheme _theme = Theme.of(context).textTheme;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            Text(
+              board.title ?? '',
+              style: _theme
+                  .headline4!
+                  .copyWith(fontWeight: FontWeight.w900),
+            ),
+            Text(
+              board.subtitle ?? '',
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              style: _theme
+                  .bodyText1!
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+        Image.network(
+          board.image??"image.com",
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(
+              CupertinoIcons.flame,
+              size: 70,
+              color: Colors.green,
+            );
+          },
+        ),
+       if( board.table != null)
+             Column(
+                children: board.table!.entries
+                    .map((entry) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 48),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                entry.key.toString().toCapitalized(),
+                                style: _theme
+                                    .headline5!
+                                    .copyWith(fontWeight: FontWeight.w700),
+                              ),
+                              Text(
+                                entry.value.toString(),
+                                style: _theme
+                                    .headline5!
+                                    .copyWith(fontWeight: FontWeight.w700),
+                                // .copyWith(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ))
+                    .toList())
+      ],
     );
   }
 }

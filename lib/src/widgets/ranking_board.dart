@@ -16,7 +16,7 @@ class RankingBoardPage extends StatelessWidget {
     var data = processBoard(board.player ?? [], board.points ?? -1, userId);
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           children: [
@@ -38,32 +38,14 @@ class RankingBoardPage extends StatelessWidget {
             ),
           ],
         ),
-
-        // todo : change indices (priority 1)
         Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.blueGrey, width: 3),
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.blueGrey,
-                  offset: Offset(
-                    5.0,
-                    5.0,
-                  ),
-                  blurRadius: 10.0,
-                  spreadRadius: 2.0,
-                ), //BoxShadow
-                BoxShadow(
-                  color: Colors.white,
-                  offset: Offset(0.0, 0.0),
-                  blurRadius: 0.0,
-                  spreadRadius: 0.0,
-                ),
-              ],
+              borderRadius: const BorderRadius.all(Radius.circular(0)),
             ),
             child: SizedBox(
-                height: MediaQuery.of(context).size.height * .6,
+                // height: MediaQuery.of(context).size.height * .4,
+                height: 80 * 4,
                 child: RankAnimationWidget(
                     userId: userId,
                     players: data[0],
@@ -98,6 +80,7 @@ class RankAnimationWidget extends StatelessWidget {
     // dynamic player;
     // var oldIndex = 2;
     // var newIndex = 1;
+    double _height = MediaQuery.of(context).size.height;
     var totalItems = players.length;
     final scrollHeight = (totalItems + 1) * 80;
     logPrint.d(
@@ -108,7 +91,7 @@ class RankAnimationWidget extends StatelessWidget {
     //   // await Future.delayed(const Duration(milliseconds: 400));
     // }
 
-    await scrollController.animateTo(scrollHeight * (oldIndex) / totalItems,
+    await scrollController.animateTo(scrollHeight * (oldIndex-2) / totalItems,
         duration: const Duration(milliseconds: 1500), curve: Curves.linear);
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -121,8 +104,8 @@ class RankAnimationWidget extends StatelessWidget {
     }
 
     _scrollAnimation() async {
-      scrollController.animateTo(scrollHeight * (newIndex) / totalItems,
-          duration: const Duration(milliseconds: 3000), curve: Curves.linear);
+      scrollController.animateTo(scrollHeight * (newIndex-2) / totalItems,
+          duration: const Duration(milliseconds: 3000), curve: Curves.easeInToLinear);
       await Future.delayed(const Duration(seconds: 1));
     }
 
@@ -144,7 +127,7 @@ class RankAnimationWidget extends StatelessWidget {
           begin: Offset(0, (oldIndex - newIndex).toDouble()),
           end: const Offset(0, 0),
         ).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeInOutQuad)
+            CurvedAnimation(parent: animation, curve: Curves.easeInToLinear)
             // animation
             ),
         child: PlayerRowWidget(

@@ -436,9 +436,14 @@ class GamificationApiProvider {
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl,
       {testApi = false, testEvent = ''}) async {
     if (testApi) {
+
       if (testEvent == 'restart') {
+        logPrint.d('testApi : gameDataInit  - $gameDataRestartInit');
+
         return GamificationDataMeta.fromJson(gameDataRestartInit);
       }
+      logPrint.d('testApi :  gameDataInit  - $gamificationDataInit');
+
       return GamificationDataMeta.fromJson(gamificationDataInit);
     }
     var _url = baseUrl + "/gameData/$userId";

@@ -15,63 +15,81 @@ class ShowBoardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Board? _board = context.select((GamificationBloc bloc) => bloc.state.board);
+    if (_board == null || _board.type == null) {
+      return const SizedBox.shrink();
+    }
+
     var _index =
         context.select((GamificationBloc bloc) => bloc.state.boardIndex);
-    if (_board == null || _board.type == null) {
-      return Container();
-    }
-    else {
-      return WillPopScope(
-          child: Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    Size _size = MediaQuery.of(context).size;
+
+    return WillPopScope(
+        child: Container(
+          color: Colors.white,
+          child: Stack(children: [
+            Column(
               children: [
                 ///Share Button
-                if(_board.share != null)
-                    TextButton(
-                        onPressed: () async {
-                          logPrint.d('app shared clicked in UI');
-                          await Share.share(_board.share ?? '');
-                        },
-                        child: const Icon(
-                          CupertinoIcons.arrowshape_turn_up_right,
-                        )),
+                SizedBox(
+                  height: _size.height * .1,
+                  child: _board.share != null
+                      ? Align(
+                          alignment: Alignment.topRight,
+                          child: TextButton(
+                              onPressed: () async {
+                                logPrint.d('app shared clicked in UI');
+                                await Share.share(_board.share ?? '');
+                              },
+                              child: const Icon(
+                                CupertinoIcons.arrowshape_turn_up_right,
+                              )),
+                        )
+                      : Container(),
+                ),
 
                 ///  Boards
-                if(_board.type == 'normal')
-                     NormalBoardContent(
-                        board: _board,
-                      ),
-                if(_board.type != 'normal')
-                     RankingBoardPage(board: _board, userId: userId),
+                SizedBox(
+                  height: _size.height * .6,
+                  child: _board.type == 'normal'
+                      ? NormalBoardContent(
+                          board: _board,
+                        )
+                      : RankingBoardPage(board: _board, userId: userId),
+                ),
+              ],
+            ),
 
-                /// Continue Button
-                Container(
-                  margin: const EdgeInsets.only(bottom: 48),
-                  width: MediaQuery.of(context).size.width * .9,
-                  height: 60,
-                  child: OutlinedButton(
-                      onPressed: () async {
-                        context
-                            .read<GamificationBloc>()
-                            .add(ShowBoardEvent(index: _index! + 1));
-                      },
+            /// Continue Button
+            Positioned(
+              bottom: 48,
+              left: _size.width*.05,
+              child: SizedBox(
+                // margin: const EdgeInsets.only(bottom: 48),
+                width: _size.width*.9,
+                child: OutlinedButton(
+                    onPressed: () async {
+                      context
+                          .read<GamificationBloc>()
+                          .add(ShowBoardEvent(index: _index! + 1));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Text(
                         "Continue",
                         style: Theme.of(context)
                             .textTheme
                             .headline5!
-                            .copyWith(fontWeight: FontWeight.w700),
-                      )),
-                ),
-              ],
+                            .copyWith(fontWeight: FontWeight.w900),
+                      ),
+                    )),
+              ),
             ),
-          ),
+          ]),
+        ),
 
-          /// disables Back Button
-          onWillPop: () async {
-            return false;
-          });
-    }
+        /// disables Back Button
+        onWillPop: () async {
+          return false;
+        });
   }
 }

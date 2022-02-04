@@ -121,7 +121,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     _eventData["gameMap"] = Map.from(event.gameMap);
     DateTime _now = DateTime.now();
     _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now.toString()});
-    _eventData["campaignId"] = _data.campaignId;
+    if(_data.campaignId! > -1)_eventData["campaignId"] = _data.campaignId;
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
       "eventType": "gameFinish",
@@ -231,25 +231,24 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     logPrint.v("game bloc event ");
 
     var _data = state.copyWith();
-    Map _eventData = {};
     Map _new = {
       "eventType": event.name,
       "userId": event.userId,
-      "eventData": _eventData
     };
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
     logPrint.d('Game-shared in bloc ${_myGame.board}');
-    // GamificationDataMeta? _myInitGame =
-    //     await _gameRepository.getGameData(event.userId);
-    // var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
+    GamificationDataMeta? _myInitGame =
+        await _gameRepository.getGameData(event.userId);
+    var _campaignList = await _gameRepository.fetchCampaignData(event.userId);
 
-    emit(GameState.gameLoadedState(
-        gameData: _myGame,
+    emit(state.copyWith(
+        gameData: _myGame.copyWith(gameMap: _myInitGame.gameMap),
         board: getBoard(_myGame, 0),
-        campaignList: _data.campaignList,
-        campaignId: _data.campaignId,
-        userData: _data.userData));
+        campaignList: _campaignList.campaign,
+        userData: _data.userData
+    )
+    );
   }
 
   ///
@@ -303,7 +302,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     var _boards = myGame.board ?? [];
     Board? _processedBoard = Board.fromJson({});
     if (_boards.isNotEmpty && index < _boards.length) {
-      logPrint.v("board exists");
+      logPrint.v("board no = $index/${_boards.length}");
       _processedBoard = _boards[index];
     } else {
       logPrint.v("No board found");
