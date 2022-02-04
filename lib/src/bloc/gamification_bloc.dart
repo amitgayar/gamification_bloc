@@ -118,7 +118,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
     var _data = state.copyWith();
     Map _eventData = {};
-    _eventData["gameMap"] = event.gameMap;
+    _eventData["gameMap"] = Map.from(event.gameMap);
     DateTime _now = DateTime.now();
     _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now.toString()});
     _eventData["campaignId"] = _data.campaignId;
