@@ -77,9 +77,6 @@ class RankAnimationWidget extends StatelessWidget {
   final scrollController = ScrollController();
 
   animateList(context) async {
-    // dynamic player;
-    // var oldIndex = 2;
-    // var newIndex = 1;
     double _height = MediaQuery.of(context).size.height;
     var totalItems = players.length;
     final scrollHeight = (totalItems + 1) * 80;
@@ -91,22 +88,22 @@ class RankAnimationWidget extends StatelessWidget {
     //   // await Future.delayed(const Duration(milliseconds: 400));
     // }
 
-    await scrollController.animateTo(scrollHeight * (oldIndex-2) / totalItems,
-        duration: const Duration(milliseconds: 1500), curve: Curves.linear);
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await scrollController.animateTo(scrollHeight * (oldIndex-2) / totalItems,
+    //     duration: const Duration(milliseconds: 1), curve: Curves.linear);
+    scrollController.jumpTo(scrollHeight*(oldIndex-2)/totalItems);
+    await Future.delayed(const Duration(milliseconds: 1000));
 
-    // scrollController.jumpTo(scrollHeight*(oldIndex-2)/totalItems);
 
     _insertAnimation() async {
       players.insert(newIndex, editedPlayer);
       listKey.currentState!
-          .insertItem(newIndex, duration: const Duration(milliseconds: 3000));
+          .insertItem(newIndex, duration: const Duration(milliseconds: 2500));
     }
 
     _scrollAnimation() async {
       scrollController.animateTo(scrollHeight * (newIndex-2) / totalItems,
-          duration: const Duration(milliseconds: 3000), curve: Curves.easeInToLinear);
-      await Future.delayed(const Duration(seconds: 1));
+          duration: const Duration(milliseconds: 2500), curve: Curves.easeOutBack);
+      // await Future.delayed(const Duration(seconds: 1));
     }
 
     if (oldIndex != -1) {
@@ -127,7 +124,7 @@ class RankAnimationWidget extends StatelessWidget {
           begin: Offset(0, (oldIndex - newIndex).toDouble()),
           end: const Offset(0, 0),
         ).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeInToLinear)
+            CurvedAnimation(parent: animation, curve: Curves.easeOutBack)
             // animation
             ),
         child: PlayerRowWidget(

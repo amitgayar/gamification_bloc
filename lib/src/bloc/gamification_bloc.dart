@@ -119,8 +119,6 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     var _data = state.copyWith();
     Map _eventData = {};
     _eventData["gameMap"] = Map.from(event.gameMap);
-    DateTime _now = DateTime.now();
-    _eventData["gameMap"].addAll({"timezone": _now.timeZoneName, "datetime": _now.toString()});
     if(_data.campaignId! > -1)_eventData["campaignId"] = _data.campaignId;
     _eventData["firstGame"] = await checkInitialPlay();
     Map _new = {
@@ -301,7 +299,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     logPrint.v("getting board");
     var _boards = myGame.board ?? [];
     Board? _processedBoard = Board.fromJson({});
-    if (_boards.isNotEmpty && index < _boards.length) {
+    if (_boards.isNotEmpty && index < _boards.length && index > -1) {
       logPrint.v("board no = $index/${_boards.length}");
       _processedBoard = _boards[index];
     } else {

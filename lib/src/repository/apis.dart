@@ -173,16 +173,16 @@ Map<String, dynamic> gamificationDataReceive = {
           "userId": "ABC12"
         },
         {
-          "name": "Mohit Bagga",
+          "name": "Mon",
           "points": 745,
           "image": "https://source.unsplash.com/random/200x200?sig=3",
-          "userId": "Mohit Bagga"
+          "userId": "Mon"
         },
         {
-          "name": "Manav Garg",
+          "name": "Man",
           "points": 744,
           "image": "https://source.unsplash.com/random/200x200?sig=4",
-          "userId": "Manav Garg"
+          "userId": "Man"
         },
         {"name": "KLM", "points": 741, "image": "image.com", "userId": "ABC12"},
         {
@@ -203,7 +203,7 @@ Map<String, dynamic> gamificationDataReceive = {
         },
         {"name": "QRS", "points": 515, "image": "image.com", "userId": "QRS12"},
       ],
-      "points": 800
+      "points": 1000
     }
   ]
 };
@@ -436,7 +436,6 @@ class GamificationApiProvider {
   Future<GamificationDataMeta> getGameData(String? userId, String baseUrl,
       {testApi = false, testEvent = ''}) async {
     if (testApi) {
-
       if (testEvent == 'restart') {
         logPrint.d('testApi : gameDataInit  - $gameDataRestartInit');
 

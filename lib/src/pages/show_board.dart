@@ -89,6 +89,9 @@ class ShowBoardPage extends StatelessWidget {
 
         /// disables Back Button
         onWillPop: () async {
+          context
+              .read<GamificationBloc>()
+              .add(const ShowBoardEvent(index: -1));
           return false;
         });
   }
