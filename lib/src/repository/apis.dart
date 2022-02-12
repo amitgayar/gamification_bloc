@@ -348,7 +348,7 @@ Map<String, dynamic> campaignJson = {
       "image": "https://source.unsplash.com/random/200x200?sig=1",
       "gameMap": {
         "hint": 2,
-        "life": 2,
+        "life": 1,
       }
     },
     {

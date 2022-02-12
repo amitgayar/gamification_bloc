@@ -21,10 +21,11 @@ class GameLoadedEvent extends GameEvent {
 }
 
 class GameFinishedEvent extends GameEvent {
-  const GameFinishedEvent({required this.gameMap, required this.userId});
+  const GameFinishedEvent({required this.gameMap, required this.userId, this.disablePost = false});
 
   final Map<String, dynamic> gameMap;
   final String userId;
+  final bool disablePost;
 
   @override
   List<Object> get props => [gameMap, userId];
@@ -75,4 +76,14 @@ class SelectCampaign extends GameEvent {
 
   @override
   List<Object?> get props => [campaignId];
+}
+
+class TimerStart extends GameEvent{
+  const TimerStart({required this.gameMap, required this.userId});
+
+  final Map<String, dynamic> gameMap;
+  final String userId;
+
+  @override
+  List<Object> get props => [gameMap, userId];
 }

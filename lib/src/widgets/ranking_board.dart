@@ -77,7 +77,7 @@ class RankAnimationWidget extends StatelessWidget {
   final scrollController = ScrollController();
 
   animateList(context) async {
-    double _height = MediaQuery.of(context).size.height;
+    // double _height = MediaQuery.of(context).size.height;
     var totalItems = players.length;
     final scrollHeight = (totalItems + 1) * 80;
     logPrint.d(

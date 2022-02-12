@@ -9,7 +9,8 @@ class GameState extends Equatable {
       this.campaignId,
       this.userData,
       this.isCampaignLoaded = true,
-      this.isGameLoaded = true});
+      this.isGameLoaded = true,
+      this.disablePost = false});
 
   const GameState.initial() : this._();
 
@@ -43,6 +44,7 @@ class GameState extends Equatable {
     GameUserData? userData,
     bool? isGameLoaded,
     bool? isCampaignLoaded,
+    bool? disablePost
   }) {
     return GameState._(
         gameData: gameData ?? this.gameData,
@@ -52,7 +54,10 @@ class GameState extends Equatable {
         campaignId: campaignId ?? this.campaignId,
         userData: userData ?? this.userData,
         isGameLoaded: isGameLoaded ?? this.isGameLoaded,
-        isCampaignLoaded: isCampaignLoaded ?? this.isCampaignLoaded);
+        isCampaignLoaded: isCampaignLoaded ?? this.isCampaignLoaded,
+      disablePost: disablePost?? this.disablePost
+    );
+
   }
 
   final GamificationDataMeta? gameData;
@@ -63,6 +68,7 @@ class GameState extends Equatable {
   final GameUserData? userData;
   final bool? isGameLoaded;
   final bool? isCampaignLoaded;
+  final bool? disablePost;
 
   bool get isComplete => ([gameData].isNotEmpty);
 
