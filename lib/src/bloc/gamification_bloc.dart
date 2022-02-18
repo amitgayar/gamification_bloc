@@ -66,7 +66,10 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       GameFinishedEvent event,
       Emitter<GameState> emit,
       ) async {
-    _timerStop();
+
+    if(['fail', 'restart'].contains(event.gameMap['result'])) {
+      _timerStop();
+    }
     // await _gameFinishedFunc(event.userId, event.gameMap, emit);
     logPrint.v("game bloc event with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
@@ -131,7 +134,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       var _appOpen = await checkInitialAppOpen();
       if(_appOpen){
         Map _new = {
-          "eventType": _appOpen,
+          "eventType": _appOpen.toString(),
           "userId": event.userId,
         };
 

@@ -375,6 +375,17 @@ Map<String, dynamic> campaignJson = {
     },
     {
       "id": 4,
+      "name": "Time Bound",
+      "desc": "Complete with in this time bound",
+      "image": "https://source.unsplash.com/random/200x200?sig=5",
+      "gameMap": {
+        "hint": 6,
+        "life": 6,
+        "time": 10
+      }
+    },
+    {
+      "id": 5,
       "isAd": true,
       "adCount": 2,
       "name": "Ad Benefits",
