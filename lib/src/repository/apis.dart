@@ -330,7 +330,7 @@ Map<String, dynamic> gamificationRateAppDataReceive = {
   "board": [
     {
       "type": "normal",
-      "name": "App rated",
+      "name": "App got rated",
       "desc": "Awarded 120 gems",
       "image": "gif1.com",
     }
