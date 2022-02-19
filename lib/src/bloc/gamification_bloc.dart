@@ -196,10 +196,11 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
     };
     final GamificationDataMeta _myGame =
         await _gameRepository.postGameData(_new);
+    var _gameInitData = await _gameRepository.getGameData(event.userId);
     final _campaignList = await _gameRepository.fetchCampaignData(event.userId);
     var _board = getBoard(_myGame, 0);
     emit(state.copyWith(
-        gameData: _myGame,
+        gameData: _myGame.copyWith(gameMap: _gameInitData.gameMap),
         board: _board,
         campaignList: _campaignList.campaign,
         userData: _data.userData));
