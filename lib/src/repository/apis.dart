@@ -326,6 +326,16 @@ Map<String, dynamic> gamificationShareDataReceive = {
     }
   ]
 };
+Map<String, dynamic> gamificationRateAppDataReceive = {
+  "board": [
+    {
+      "type": "normal",
+      "name": "App rated",
+      "desc": "Awarded 120 gems",
+      "image": "gif1.com",
+    }
+  ]
+};
 Map<String, dynamic> gamificationCampaignDataReceive = {
   "responseCode": 200,
   "board": [
@@ -491,6 +501,10 @@ class GamificationApiProvider {
           logPrint
               .d('testApi : gameShared event  - $gamificationShareDataReceive');
           return GamificationDataMeta.fromJson(gamificationShareDataReceive);
+        case "rateApp":
+          logPrint
+              .d('testApi : gameShared event  - $gamificationRateAppDataReceive');
+          return GamificationDataMeta.fromJson(gamificationRateAppDataReceive);
         case "campaignAd":
           logPrint.d(
               'testApi : campaignAd event  - $gamificationCampaignDataReceive');
