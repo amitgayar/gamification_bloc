@@ -23,7 +23,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
   final GameRepository _gameRepository;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Timer _timer;
+  Timer? _timer;
 
   void _onEvent(GameEvent event, Emitter<GameState> emit) {
     if (event is GameLoadingEvent) return _onGameLoading(event, emit);
@@ -43,7 +43,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       ) async {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async{
       if (timer.tick > 10) {
-        logPrint.e(" _timerStartEvent stop call in GameBloc for Ad at t = ${timer.tick} s");
+        logPrint.w(" _timerStartEvent stop call in GameBloc for Ad at t = ${timer.tick} s");
         timer.cancel();
         add(GameFinishedEvent(gameMap: event.gameMap, userId: event.userId));
       }
@@ -52,11 +52,13 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
 
 
   _timerStop(){
-    logPrint.e(" _timerStop call in GameBloc for Ad");
-
-    if (_timer.isActive) {
-      logPrint.e(" _timerStop is active in GameBloc for Ad");
-      _timer.cancel();
+    logPrint.w(" _timerStop call in GameBloc for Ad");
+    if (_timer != null && _timer!.isActive) {
+      logPrint.w(" _timerStop is active in GameBloc for Ad");
+      _timer!.cancel();
+    }
+    else{
+      logPrint.w(" _timerStop is not active in GameBloc for Ad");
     }
   }
 
@@ -66,10 +68,7 @@ class GamificationBloc extends Bloc<GameEvent, GameState> {
       GameFinishedEvent event,
       Emitter<GameState> emit,
       ) async {
-
-    if(['fail', 'restart'].contains(event.gameMap['result'])) {
       _timerStop();
-    }
     // await _gameFinishedFunc(event.userId, event.gameMap, emit);
     logPrint.v("game bloc event with gameMap = ${event.gameMap}");
     var _data = state.copyWith();
